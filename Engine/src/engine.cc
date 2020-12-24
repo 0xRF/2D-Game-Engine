@@ -2,6 +2,7 @@
 #include "../include/window.hh"
 #include "../include/input.hh"
 #include "../include/log.hh"
+#include "../include/frame.hh"
 #include <SDL.h>
 
 namespace engine {
@@ -23,7 +24,7 @@ namespace engine {
         }
         instance->m_window = Window::create("Test", 1280, 720);
 
-        if (!input::initialize(instance)) {
+        if (!Input::initialize(instance)) {
             log("Failed to init input");
             delete instance;
             return nullptr;
@@ -37,11 +38,24 @@ namespace engine {
 
     void Engine::run() {
         m_alive = true;
+        Frame frame = Frame();
+
         while(m_alive) {
 
-            for (auto fn : m_update_queue)
-                fn();
+            SDL_Event event;
+            while (SDL_PollEvent(&event))
+                for(auto fn : m_event_queue)
+                    if(event.type == fn.first)
+                        fn.second(event);
 
+            Uint32 t1 = SDL_GetTicks();
+
+            for (auto fn : m_update_queue)
+                fn(frame.deltaTime);
+
+            Uint32 t2 = SDL_GetTicks();
+
+            frame.deltaTime = (float)(t2 - t1)/1000;
         }
     }
 
@@ -57,5 +71,9 @@ namespace engine {
 
     Engine::~Engine() {
         delete m_window;
+    }
+
+    void Engine::subscibe_to_event(uint32_t type, eventfn func) {
+        m_event_queue.emplace_back(type, func);
     }
 };
