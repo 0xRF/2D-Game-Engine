@@ -1,17 +1,22 @@
 #include <engine.hh>
 #include <input.hh>
+
+using namespace engine;
+
+static Engine* instance = nullptr;
+
+
+
 int main(int argc, char** argv){
 
-    engine::Engine* instance = engine::Engine::initialize();
+    instance = Engine::initialize();
+
+    instance->subscribe_to_update((updatefn)[] (float deltaTime) -> void {
+        if(Input::GetKeyDown(KeyCode::A))
+            instance->stop();
+    });
 
     instance->run();
-
-    instance->subscribe_to_update((engine::updatefn)[] (float deltaTime) -> void {
-
-        engine::Input::
-
-
-    });
 
     return 0;
 }

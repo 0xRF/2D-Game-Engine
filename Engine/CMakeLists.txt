@@ -14,7 +14,7 @@ add_library(
         #Internal
         #Src
         src/engine.cc
-        include/input.hh include/window.hh include/common.hh src/window.cc include/log.hh src/log.cc src/input.cc include/utils.hh src/utils.cc include/objects/camera.hh include/objects/object.hh include/vector.hh include/frame.hh)
+        include/input.hh include/window.hh include/common.hh src/window.cc include/log.hh src/log.cc src/input.cc include/utils.hh src/utils.cc include/objects/camera.hh include/objects/object.hh include/vector.hh include/frame.hh include/components/component.hh internal/component_manager.hh internal/object_manager.hh)
 
 include_directories(${SDL2_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR})
 target_link_libraries(Engine ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES})

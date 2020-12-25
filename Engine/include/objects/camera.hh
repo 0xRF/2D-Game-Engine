@@ -1,7 +1,10 @@
 #pragma once
 
-class Camera
+#include "object.hh"
+
+class Camera : public Object
 {
+
 
 
 };
