@@ -1,5 +1,7 @@
 #include "../include/log.hh"
+#include <stdarg.h>
 #include <valarray>
+#include <iostream>
 
 namespace engine{
     void log(const char* fmt, ...){

@@ -6,6 +6,11 @@ struct SDL_Window;
 
 namespace engine
 {
+    namespace internal{
+        class GraphicsSystem;
+    }
+
+
     class Window {
     public:
         static Window *create(const std::string &name, unsigned int width, unsigned int height);
@@ -17,6 +22,7 @@ namespace engine
     private:
 
         Window(std::string name, SDL_Window *window);
+        friend internal::GraphicsSystem;
 
         std::string m_name;
         SDL_Window* m_window;

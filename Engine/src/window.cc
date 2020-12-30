@@ -6,12 +6,13 @@
 namespace engine {
 
     bool Window::initialize() {
+        log("Initing window");
         if(SDL_InitSubSystem(SDL_INIT_VIDEO) != 0){
             log("Failed to initialize Window %s", SDL_GetError());
             return false;
         }
         return true;
-    }
+       }
 
     Window *Window::create(const std::string &name, unsigned int w, unsigned int h) {
 
