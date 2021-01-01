@@ -30,6 +30,7 @@ Engine *Engine::initialize()
 
     instance->m_window = Window::create("Test", 1280, 720);
 
+    logl("Init Input");
     if (!Input::initialize(instance)) {
         log("Failed to init input");
         delete instance;
@@ -63,6 +64,9 @@ void Engine::run()
     m_alive = true;
     Frame frame = Frame();
 
+    for (auto fn : m_start_queue)
+        fn(registry);
+
     for (auto sys : m_systems)
         sys->scene_load(registry);
 
@@ -76,18 +80,26 @@ void Engine::run()
         Uint32 t1 = SDL_GetTicks();
 
         for (auto fn : m_update_queue)
-            fn(frame.deltaTime);
+            fn(registry, frame.deltaTime);
 
         for (auto sys : m_systems)
             sys->update(frame.deltaTime, registry);
 
         for (auto fn : m_post_update_queue)
-            fn(frame.deltaTime);
+            fn(registry, frame.deltaTime);
 
         for (auto sys : m_systems)
             sys->update_end(registry);
 
-        m_graphics->render(registry);
+        m_graphics->render_begin(registry);
+
+        for (auto fn : m_render_queue)
+            fn();
+
+        for (auto sys : m_systems)
+            sys->on_render();
+
+        m_graphics->render_end();
 
         Uint32 t2 = SDL_GetTicks();
 
@@ -115,9 +127,19 @@ void Engine::subscribe_to_post_update(updatefn func)
     m_post_update_queue.emplace_back(func);
 }
 
+void Engine::subscribe_to_start(startfn func)
+{
+    m_start_queue.push_back(func);
+}
+
 void Engine::register_system(System *sys)
 {
     m_systems.push_back(sys);
+}
+
+void Engine::subscribe_to_render(renderfn func)
+{
+    m_render_queue.push_back(func);
 }
 
 Engine::Engine()

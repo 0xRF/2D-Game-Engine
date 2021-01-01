@@ -1,25 +1,20 @@
+
 #pragma once
 
 #include "../include/system.hh"
 
-struct SDL_Renderer;
-
 namespace engine {
-class Engine;
-class TextureManager;
 namespace internal {
 
-class GraphicsSystem : public System {
+class PhysicsSystem : public System {
 
 public:
-    static GraphicsSystem *create(Engine *engine);
+    static PhysicsSystem *create(Engine *engine);
+    float gravity = 9.8f;
 
 private:
-    GraphicsSystem();
-    SDL_Renderer* m_renderer;
-    static GraphicsSystem* m_instance;
-    friend Engine;
-    friend TextureManager;
+    PhysicsSystem();
+    static PhysicsSystem *m_instance;
 
     void update(float dt, entt::registry &registry);
     void update_end(entt::registry &registry);
@@ -28,7 +23,6 @@ private:
     void shutdown(entt::registry &registry);
     void render_begin(entt::registry &registry);
     void on_render();
-    void render_end();
 };
 
 } // namespace internal

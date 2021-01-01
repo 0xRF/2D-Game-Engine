@@ -8,6 +8,8 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <functional>
+#include <imgui.h>
+#include <imgui_sdl.h>
 
 namespace engine::internal {
 
@@ -15,6 +17,8 @@ GraphicsSystem *GraphicsSystem::m_instance = nullptr;
 
 GraphicsSystem *GraphicsSystem::create(Engine *engine)
 {
+    logl("Creating GraphicsSystem");
+
     if (m_instance) {
         log("ComponentManager already initalized");
         return nullptr;
@@ -30,6 +34,27 @@ GraphicsSystem *GraphicsSystem::create(Engine *engine)
 
     m_instance->m_renderer = SDL_CreateRenderer(engine->get_window()->m_window,
                                                 -1, SDL_RENDERER_ACCELERATED);
+    if(!m_instance->m_renderer){
+        logl("failed to load renderer");
+        logl("%s", SDL_GetError());
+        return nullptr;
+    }
+
+    ImGui::CreateContext();
+    ImGuiSDL::Initialize(m_instance->m_renderer,
+                         engine->get_window()->get_width(),
+                         engine->get_window()->get_height());
+
+    engine->subscibe_to_event(SDL_WINDOWEVENT, [](SDL_Event e) {
+        ImGuiIO &io = ImGui::GetIO();
+        if (e.window.event == SDL_WINDOWEVENT_RESIZED) {
+            io.DisplaySize.x = static_cast<float>(e.window.data1);
+            io.DisplaySize.y = static_cast<float>(e.window.data2);
+        }
+        else if (e.type == SDL_MOUSEWHEEL) {
+            io.MouseWheel = static_cast<float>(e.wheel.y);
+        }
+    });
 
     if (!m_instance->m_renderer) {
         logl("Failed to create renderer %s", SDL_GetError());
@@ -44,19 +69,42 @@ GraphicsSystem::GraphicsSystem()
 {
 }
 
-void GraphicsSystem::render(entt::registry &registry)
+void GraphicsSystem::render_begin(entt::registry &registry)
 {
+    ImGuiIO &io = ImGui::GetIO();
+    int mouseX, mouseY;
+    const int buttons = SDL_GetMouseState(&mouseX, &mouseY);
 
-    auto view = registry.view<const Transform, Renderer>();
+    io.DeltaTime = 1.0f / 60.0f;
+    io.MousePos =
+        ImVec2(static_cast<float>(mouseX), static_cast<float>(mouseY));
+    io.MouseDown[0] = buttons & SDL_BUTTON(SDL_BUTTON_LEFT);
+    io.MouseDown[1] = buttons & SDL_BUTTON(SDL_BUTTON_RIGHT);
+
+    ImGui::NewFrame();
+    SDL_SetRenderDrawColor(m_renderer, 114, 144, 154, 255);
+    SDL_RenderClear(m_renderer);
+
+  auto view = registry.view<const Transform, Renderer>();
+
     view.each([&](const Transform transform, Renderer renderer) {
-        Rect rect(transform.positon, renderer.texture->get_width(),
-                  renderer.texture->get_height());
+        Rect rect(transform.positon, (int)renderer.width, (int)renderer.height);
+                  
 
-        SDL_RenderCopyEx(m_renderer, (SDL_Texture *)renderer.texture->handle,
+        SDL_RenderCopyEx(m_renderer, (SDL_Texture *)renderer.texture->m_handle,
                          (SDL_Rect *)renderer.mapping, (SDL_Rect *)&rect,
                          transform.rotation, NULL, SDL_FLIP_NONE);
     });
 }
+
+void GraphicsSystem::render_end()
+{
+
+    ImGui::Render();
+    ImGuiSDL::Render(ImGui::GetDrawData());
+    SDL_RenderPresent(m_renderer);
+}
+
 void GraphicsSystem::update(float dt, entt::registry &registry)
 {
 }
@@ -73,5 +121,8 @@ void GraphicsSystem::shutdown(entt::registry &registry)
 {
 }
 
+void GraphicsSystem::on_render()
+{
+}
 } // namespace engine::internal
 

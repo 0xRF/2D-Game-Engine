@@ -19,6 +19,9 @@ namespace engine
         const std::string &get_name(void) const;
         void set_name(const std::string &name);
 
+        uint32_t get_width();
+        uint32_t get_height();
+
     private:
 
         Window(std::string name, SDL_Window *window);

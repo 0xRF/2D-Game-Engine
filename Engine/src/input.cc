@@ -12,7 +12,7 @@ enum KeyState { NONE = 0, DOWN, UP };
 
 std::map<SDL_Keycode, KeyState> m_key_states{};
 
-void Input::post_update(float dt)
+void Input::post_update(entt::registry& registry, float dt)
 {
     for (auto key : m_key_states)
         if (key.second == KeyState::UP)

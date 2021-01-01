@@ -22,7 +22,8 @@ const std::pair<uint32_t, uint32_t> Texture::get_dimensions()
     return std::pair<uint32_t, uint32_t>{m_width, m_height};
 }
 
-Texture::Texture() : m_width(0), m_height(0), m_file(NULL), handle(nullptr)
+Texture::Texture(const std::filesystem::path file, void* _handle) : m_width(0), m_height(0), m_file(file), m_handle(_handle)
 {
+    SDL_QueryTexture((SDL_Texture*)_handle, nullptr, nullptr, (int*)&m_width, (int*)&m_height);
 }
 } // namespace engine
