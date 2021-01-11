@@ -1,5 +1,4 @@
 #include "../include/engine.hh"
-#include "../include/frame.hh"
 #include "../include/input.hh"
 #include "../include/log.hh"
 #include "../include/system.hh"
@@ -8,6 +7,7 @@
 #include "../include/window.hh"
 #include "../internal/graphics_system.hh"
 #include <SDL.h>
+#include <thread>
 
 namespace engine {
 
@@ -62,7 +62,7 @@ Window *Engine::get_window() const
 void Engine::run()
 {
     m_alive = true;
-    Frame frame = Frame();
+    float deltaTime = 0.0f;
 
     for (auto fn : m_start_queue)
         fn(registry);
@@ -72,6 +72,10 @@ void Engine::run()
 
     while (m_alive) {
 
+        auto update_thread = std::thread([&]() {
+
+        });
+
         SDL_Event event;
         while (SDL_PollEvent(&event))
             for (auto fn : m_event_queue)
@@ -80,13 +84,10 @@ void Engine::run()
         Uint32 t1 = SDL_GetTicks();
 
         for (auto fn : m_update_queue)
-            fn(registry, frame.deltaTime);
-
-        for (auto sys : m_systems)
-            sys->update(frame.deltaTime, registry);
+            fn(registry, deltaTime);
 
         for (auto fn : m_post_update_queue)
-            fn(registry, frame.deltaTime);
+            fn(registry, deltaTime);
 
         for (auto sys : m_systems)
             sys->update_end(registry);
@@ -103,7 +104,7 @@ void Engine::run()
 
         Uint32 t2 = SDL_GetTicks();
 
-        frame.deltaTime = (float)(t2 - t1) / 1000;
+        deltaTime = (float)(t2 - t1) / 1000;
     }
 }
 
