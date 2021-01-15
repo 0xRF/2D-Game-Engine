@@ -7,7 +7,6 @@
 #include "../include/window.hh"
 #include "../internal/graphics_system.hh"
 #include <SDL.h>
-#include <thread>
 
 namespace engine {
 
@@ -71,10 +70,6 @@ void Engine::run()
         sys->scene_load(registry);
 
     while (m_alive) {
-
-        auto update_thread = std::thread([&]() {
-
-        });
 
         SDL_Event event;
         while (SDL_PollEvent(&event))

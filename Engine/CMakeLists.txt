@@ -30,7 +30,7 @@ add_library(
         #Src
         src/engine.cc
         include/input.hh include/window.hh include/common.hh src/window.cc include/log.hh src/log.cc src/input.cc 
-        include/utils.hh src/utils.cc include/objects/camera.hh include/vector.hh include/frame.hh 
+        include/utils.hh src/utils.cc include/objects/camera.hh include/vector.hh
         include/components/renderer.hh
         include/components/transform.hh
         include/texture_manager.hh src/texture_manager.cc
