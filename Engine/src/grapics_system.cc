@@ -1,6 +1,7 @@
 #include "../include/common.hh"
 #include "../include/components/renderer.hh"
-#include "../include/components/transform.hh"
+#include "../include/components/position.hh"
+#include "../include/components/rotatable.hh"
 #include "../include/engine.hh"
 #include "../include/log.hh"
 #include "../include/window.hh"
@@ -85,15 +86,15 @@ void GraphicsSystem::render_begin(entt::registry &registry)
     SDL_SetRenderDrawColor(m_renderer, 114, 144, 154, 255);
     SDL_RenderClear(m_renderer);
 
-  auto view = registry.view<const Transform, Renderer>();
+  auto view = registry.view<const Position, Renderer, const Rotatable>();
 
-    view.each([&](const Transform transform, Renderer renderer) {
-        Rect rect(transform.positon, (int)renderer.width, (int)renderer.height);
+    view.each([&](const Position pos, Renderer renderer, const Rotatable rotation) {
+        Rect rect(pos, (int)renderer.width, (int)renderer.height);
                   
 
         SDL_RenderCopyEx(m_renderer, (SDL_Texture *)renderer.texture->m_handle,
                          (SDL_Rect *)renderer.mapping, (SDL_Rect *)&rect,
-                         transform.rotation, NULL, SDL_FLIP_NONE);
+                         rotation.rotation, NULL, SDL_FLIP_NONE);
     });
 }
 

@@ -1,9 +1,11 @@
 #include "../internal/physics_system.hh"
 #include "../include/components/box_collider.hh"
 #include "../include/components/rigidbody.hh"
-#include "../include/components/transform.hh"
+#include "../include/components/position.hh"
 
 namespace engine::internal {
+
+PhysicsSystem *PhysicsSystem::m_instance = nullptr;
 
 PhysicsSystem *PhysicsSystem::create(Engine *engine)
 {
@@ -13,9 +15,9 @@ PhysicsSystem *PhysicsSystem::create(Engine *engine)
 
 void PhysicsSystem::update(float dt, entt::registry &registry)
 {
-    auto view = registry.view<Transform, BoxCollider>();
-    view.each([&](Transform transform, RigidBody rigid) {
-            transform.positon.y += gravity*dt;
+    auto view = registry.view<Position, RigidBody>();
+    view.each([&](Position pos, RigidBody rigid) {
+        pos.y += gravity * dt;
     });
 }
 void PhysicsSystem::update_end(entt::registry &registry)

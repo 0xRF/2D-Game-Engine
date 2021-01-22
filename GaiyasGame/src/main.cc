@@ -1,6 +1,8 @@
 #include <components/component.hh>
 #include <components/renderer.hh>
-#include <components/transform.hh>
+#include <components/position.hh>
+#include <components/rotatable.hh>
+#include <components/box_collider.hh>
 #include <engine.hh>
 #include <imgui.h>
 #include <input.hh>
@@ -24,10 +26,12 @@ int main(int argc, char **argv)
             return;
         }
         auto entity = registry.create();
-        registry.emplace<Transform>(entity);
+        registry.emplace<Position>(entity);
         registry.emplace<Renderer>(entity, texture).scale(0.1f);
+        registry.emplace<Rotatable>(entity, Rotatable());
+        registry.emplace<BoxCollider>(entity, BoxCollider(30, 30));
 
-        auto view = registry.view<const Transform, Renderer>();
+        auto view = registry.view<const Position, Renderer>();
     });
 
     instance->subscribe_to_update(

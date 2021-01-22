@@ -13,7 +13,6 @@ public:
     float gravity = 9.8f;
 
 private:
-    PhysicsSystem();
     static PhysicsSystem *m_instance;
 
     void update(float dt, entt::registry &registry);

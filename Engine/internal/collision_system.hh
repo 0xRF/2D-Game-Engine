@@ -3,15 +3,27 @@
 
 #include "../include/system.hh"
 
-namespace engine::internal {
+struct BoxCollider;
+struct Engine;
+typedef Vector2 Position;
+struct PolygonCollider;
+struct RigidBody;
+struct Rotatable;
+
+namespace engine {
+
+namespace internal {
 
 class CollisionSystem : public System {
 
 public:
     static CollisionSystem *create(Engine *engine);
 
+    static bool Collides(Rect rect1, Rect rect2);
+    static bool Collides(Position t1, PolygonCollider p1, Rotatable rot1,
+                         Position t2, PolygonCollider p2, Rotatable rot2);
+
 private:
-    CollisionSystem();
     static CollisionSystem *m_instance;
 
     void update(float dt, entt::registry &registry);
@@ -23,5 +35,5 @@ private:
     void on_render();
 };
 
-} // namespace engine::internal
-
+} // namespace internal
+} // namespace engine

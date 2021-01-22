@@ -31,11 +31,21 @@ add_library(
         src/engine.cc
         include/input.hh include/window.hh include/common.hh src/window.cc include/log.hh src/log.cc src/input.cc 
         include/utils.hh src/utils.cc include/objects/camera.hh include/vector.hh
+        include/math.hh
         include/components/renderer.hh
-        include/components/transform.hh
+        #        include/components/transform.hh
+        include/components/position.hh
+        include/components/box_collider.hh
+        include/components/polygon_collider.hh
+        include/components/rotatable.hh
         include/texture_manager.hh src/texture_manager.cc
         include/texture.hh src/texture.cc
         internal/graphics_system.hh src/grapics_system.cc
+
+        
+
+        internal/physics_system.hh internal/collision_system.hh
+        src/physics_system.cc src/collision_system.cc
 )
 
 include_directories(${SDL2_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${imgui_INCLUDE_DIR} ${imgui_sdl_INCLUDE_DIR})

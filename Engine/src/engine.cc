@@ -5,7 +5,10 @@
 #include "../include/texture.hh"
 #include "../include/texture_manager.hh"
 #include "../include/window.hh"
+#include "../internal/collision_system.hh"
 #include "../internal/graphics_system.hh"
+#include "../internal/physics_system.hh"
+
 #include <SDL.h>
 
 namespace engine {
@@ -46,6 +49,18 @@ Engine *Engine::initialize()
     instance->m_texture_manager = TextureManager::create(instance);
     if (!instance->m_texture_manager) {
         logl("Failed to init texture_manager");
+        delete instance;
+        return nullptr;
+    }
+
+    if (!internal::CollisionSystem::create(instance)) {
+        logl("Failed to init collision_system");
+        delete instance;
+        return nullptr;
+    }
+
+    if (!internal::PhysicsSystem::create(instance)) {
+        logl("Failed to init physics_system");
         delete instance;
         return nullptr;
     }
