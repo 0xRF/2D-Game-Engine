@@ -88,9 +88,11 @@ void CollisionSystem::update(float dt, entt::registry &registry)
 
             PolygonCollider collider2 = collidables.get<PolygonCollider>(*col);
             Position positon2 = collidables.get<Position>(*col);
-            Position positon2 = collidables.try_get<Rotatable>(ent);
+            Rotatable rotation2 = collidables.get<Rotatable>(*col);
 
-            if (Collides(positon1, collider1, positon2, collider2)) {
+            if(Collides(positon1, collider1, rotation1,
+            positon2, collider2, rotation2)){
+
                 rigidbody1.velocity = 0.0f;
             }
         }

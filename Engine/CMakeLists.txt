@@ -46,6 +46,10 @@ add_library(
 
         internal/physics_system.hh internal/collision_system.hh
         src/physics_system.cc src/collision_system.cc
+
+        "${imgui_sdl_INCLUDE_DIR}/imgui_sdl.cpp"
+                "${imgui_sdl_INCLUDE_DIR}/imgui_sdl.h"
+
 )
 
 include_directories(${SDL2_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${imgui_INCLUDE_DIR} ${imgui_sdl_INCLUDE_DIR})
