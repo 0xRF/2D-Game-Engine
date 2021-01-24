@@ -40,7 +40,7 @@ Engine *Engine::initialize()
     }
 
     instance->m_graphics = internal::GraphicsSystem::create(instance);
-    if (!instance->m_graphics) {
+    if (!instance->register_system(instance->m_graphics)) {
         logl("Failed to init texture_manager");
         delete instance;
         return nullptr;
@@ -53,13 +53,13 @@ Engine *Engine::initialize()
         return nullptr;
     }
 
-    if (!internal::CollisionSystem::create(instance)) {
+    if (!instance->register_system(internal::CollisionSystem::create(instance))) {
         logl("Failed to init collision_system");
         delete instance;
         return nullptr;
     }
 
-    if (!internal::PhysicsSystem::create(instance)) {
+    if (!instance->register_system(internal::PhysicsSystem::create(instance))) {
         logl("Failed to init physics_system");
         delete instance;
         return nullptr;
@@ -108,7 +108,7 @@ void Engine::run()
             fn();
 
         for (auto sys : m_systems)
-            sys->on_render();
+            sys->on_render(registry);
 
         m_graphics->render_end();
 
@@ -143,9 +143,10 @@ void Engine::subscribe_to_start(startfn func)
     m_start_queue.push_back(func);
 }
 
-void Engine::register_system(System *sys)
+System* Engine::register_system(System *sys)
 {
     m_systems.push_back(sys);
+    return sys;
 }
 
 void Engine::subscribe_to_render(renderfn func)

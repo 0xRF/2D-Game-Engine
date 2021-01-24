@@ -29,18 +29,18 @@ public:
 
     void stop();
 
-    void register_system(System *sys);
+    System* register_system(System *sys);
 
     void subscribe_to_start(startfn func);
     void subscibe_to_event(uint32_t type, eventfn func);
     void subscribe_to_update(updatefn func);
     void subscribe_to_post_update(updatefn func);
     void subscribe_to_render(renderfn func);
+    internal::GraphicsSystem *m_graphics;
 
 private:
     Window *m_window;
     TextureManager *m_texture_manager;
-    internal::GraphicsSystem *m_graphics;
     std::vector<System *> m_systems{};
     
     bool m_alive = false;

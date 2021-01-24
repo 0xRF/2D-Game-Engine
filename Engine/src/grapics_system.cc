@@ -122,7 +122,7 @@ void GraphicsSystem::shutdown(entt::registry &registry)
 {
 }
 
-void GraphicsSystem::on_render()
+void GraphicsSystem::on_render(entt::registry &registry)
 {
 }
 } // namespace engine::internal

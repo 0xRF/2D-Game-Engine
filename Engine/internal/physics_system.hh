@@ -21,7 +21,7 @@ private:
     void scene_load(entt::registry &registry);
     void shutdown(entt::registry &registry);
     void render_begin(entt::registry &registry);
-    void on_render();
+    void on_render(entt::registry &registry);
 };
 
 } // namespace internal

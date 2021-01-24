@@ -25,6 +25,7 @@ public:
 
 private:
     static CollisionSystem *m_instance;
+    static Engine* m_engine;
 
     void update(float dt, entt::registry &registry);
     void update_end(entt::registry &registry);
@@ -32,7 +33,7 @@ private:
     void scene_load(entt::registry &registry);
     void shutdown(entt::registry &registry);
     void render_begin(entt::registry &registry);
-    void on_render();
+    void on_render(entt::registry &registry);
 };
 
 } // namespace internal
