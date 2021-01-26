@@ -102,7 +102,7 @@ void CollisionSystem::update(float dt, entt::registry &registry) {
       if (Collides(positon1, collider1, rotation1, positon2, collider2,
                    rotation2)) {
 
-        rigidbody1.velocity = 0.0f;
+        rigidbody1.velocity.y = 0.0f;
       }
     }
   }
@@ -115,13 +115,14 @@ void CollisionSystem::render_begin(entt::registry &registry) {}
 void CollisionSystem::on_render(entt::registry &registry) {
 
   auto polygons = registry.view<Position, PolygonCollider, Rotatable>();
-
+/*
   auto ent = *(polygons.begin());
   Position &position = polygons.get<Position>(ent);
   ImGui::Begin("Win");
   ImGui::SliderFloat("Pos X", &position.x, 0, 1280);
   ImGui::SliderFloat("Pos Y", &position.y, 0, 720);
   ImGui::End();
+  */
 
   auto renderer = m_engine->m_graphics->m_renderer;
   SDL_SetRenderDrawColor(renderer, 255, 0, 0, 128);
@@ -133,12 +134,9 @@ void CollisionSystem::on_render(entt::registry &registry) {
 
     for (int a = 0; a < col.points.size(); a++) {
 
-      int b = a + 1;
       Vector2 point1 = col.points[a];
-      Vector2 point2 = col.points[b % col.points.size()];
+      Vector2 point2 = col.points[(a+1) % col.points.size()];
 
-      engine::logl("%d ---> %d : (%f %f) --> (%f %f)", a, b % col.points.size(),
-                   point1.x, point1.y, point2.x, point2.y);
       /*      point1 = RotateVector2D(point1, rot.rotation);
             point2 = RotateVector2D(point2, rot.rotation);*/
       point1 += pos;

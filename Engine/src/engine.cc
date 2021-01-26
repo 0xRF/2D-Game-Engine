@@ -8,6 +8,7 @@
 #include "../internal/collision_system.hh"
 #include "../internal/graphics_system.hh"
 #include "../internal/physics_system.hh"
+#include "../internal/movement_system.hh"
 
 #include <SDL.h>
 
@@ -65,6 +66,12 @@ Engine *Engine::initialize()
         return nullptr;
     }
 
+    if (!instance->register_system(internal::MovementSystem::create(instance))) {
+        logl("Failed to init movement_system");
+        delete instance;
+        return nullptr;
+    }
+
     return instance;
 }
 
@@ -95,6 +102,9 @@ void Engine::run()
 
         for (auto fn : m_update_queue)
             fn(registry, deltaTime);
+
+        for (auto sys : m_systems)
+            sys->update(deltaTime, registry);
 
         for (auto fn : m_post_update_queue)
             fn(registry, deltaTime);

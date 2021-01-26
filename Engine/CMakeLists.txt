@@ -41,7 +41,7 @@ add_library(
         include/texture_manager.hh src/texture_manager.cc
         include/texture.hh src/texture.cc
         internal/graphics_system.hh src/grapics_system.cc
-
+        internal/movement_system.hh src/movement_system.cc
         
 
         internal/physics_system.hh internal/collision_system.hh

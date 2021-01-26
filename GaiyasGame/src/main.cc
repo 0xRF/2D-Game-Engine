@@ -2,7 +2,7 @@
 #include <components/component.hh>
 #include <components/position.hh>
 #include <components/renderer.hh>
-#include <components/rigidbody.hh>
+#include <components/rigidbody.hh> 
 #include <components/rotatable.hh>
 #include <engine.hh>
 #include <imgui.h>
@@ -20,7 +20,7 @@ int main(int argc, char **argv) {
 
   instance->subscribe_to_start((startfn)[](entt::registry & registry)->void {
     auto texture =
-        TextureManager::Load("/home/rf/Projects/c++/gaiyas/assets/frame-1.png");
+        TextureManager::Load("/Users/rf/CLionProjects/Gaiyas/assets/frame-1.png");
     if (!texture) {
       logl("Failed to load texture");
       return;
@@ -32,14 +32,14 @@ int main(int argc, char **argv) {
     registry.emplace<Rotatable>(entity, Rotatable());
     registry.emplace<PolygonCollider>(
         entity, BoxCollider(texture->get_width(), texture->get_height()));
+    registry.emplace<RigidBody>(entity, RigidBody());
 
     entity = registry.create();
     registry.emplace<Position>(entity, Position(10.0f, 10.0f));
     registry.emplace<Renderer>(entity, texture).scale(0.1f);
     registry.emplace<Rotatable>(entity, Rotatable());
     registry.emplace<PolygonCollider>(
-        entity, BoxCollider(texture->get_width(), texture->get_height()));
-    registry.emplace<RigidBody>(entity, RigidBody());
+    entity, BoxCollider(texture->get_width(), texture->get_height()));
 
   });
 
@@ -49,7 +49,7 @@ int main(int argc, char **argv) {
           instance->stop();
       });
 
-  instance->subscribe_to_render([]() -> void { ImGui::ShowDemoWindow(); });
+  instance->subscribe_to_render([]() -> void { });
   instance->run();
 
   return 0;
