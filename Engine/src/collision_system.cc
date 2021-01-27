@@ -25,13 +25,15 @@ bool CollisionSystem::Collides(Position t1, PolygonCollider p1, Rotatable rot1,
   std::vector<Vector2> _poly2(p2.points.size());
 
   for (int i = 0; i < _poly1.size(); i++) {
-    _poly1[i] = RotateVector2D(p1.points[i], rot2.rotation);
+    //_poly1[i] = RotateVector2D(p1.points[i], rot2.rotation);
+    _poly1[i] = p1.points[i];
     _poly1[i].x += t1.x;
     _poly1[i].y += t1.y;
   }
 
   for (int i = 0; i < _poly2.size(); i++) {
-    _poly2[i] = RotateVector2D(p2.points[i], rot2.rotation);
+    //_poly2[i] = RotateVector2D(p2.points[i], rot2.rotation);
+    _poly2[i] = p2.points[i];
     _poly2[i].x += t2.x;
     _poly2[i].y += t2.y;
   }
@@ -44,27 +46,32 @@ bool CollisionSystem::Collides(Position t1, PolygonCollider p1, Rotatable rot1,
       poly2 = &_poly1;
     }
 
-    for (int a = 0; i < poly1->size(); a++) {
-      int b = (a + 1) % poly1->size();
-      Vector2 proj_axis = {-(poly1->at(b).y - poly1->at(a).y),
-                           poly1->at(b).x - poly1->at(a).x};
+    for (int a = 0; a < poly1->size(); a++) {
+      int c = a+1;
+      int b = c % poly1->size();
+
+      //Vector2 proj_axis = poly1->at(a).twopoints(poly1->at(b)).perpendicular();
+      Vector2 proj_axis = (*poly1)[a].twopoints((*poly1)[b]).perpendicular();
+
+//      {-(poly1->at(b).y - poly1->at(a).y),
+  //                         poly1->at(b).x - poly1->at(a).x};
 
       float min_r1 = std::numeric_limits<float>::max();
       float max_r1 = -std::numeric_limits<float>::max();
-      for (int p = 0; i < poly1->size(); p++) {
-        float q = DotProduct(poly1->at(p), proj_axis);
+      for (int p = 0; p < poly1->size(); p++) {
+        float q = DotProduct((poly1->at(p)), proj_axis);
 
         max_r1 = std::max(max_r1, q);
-        min_r1 = std::max(min_r1, q);
+        min_r1 = std::min(min_r1, q);
       }
 
       float min_r2 = std::numeric_limits<float>::max();
       float max_r2 = -std::numeric_limits<float>::max();
-      for (int p = 0; i < poly2->size(); p++) {
-        float q = DotProduct(poly2->at(p), proj_axis);
+      for (int p = 0; p < poly2->size(); p++) {
+        float q = DotProduct((poly2->at(p)), proj_axis);
 
         max_r2 = std::max(max_r2, q);
-        min_r2 = std::max(min_r2, q);
+        min_r2 = std::min(min_r2, q);
       }
 
       if (!(max_r2 >= min_r1 && max_r1 >= min_r2))
@@ -115,14 +122,13 @@ void CollisionSystem::render_begin(entt::registry &registry) {}
 void CollisionSystem::on_render(entt::registry &registry) {
 
   auto polygons = registry.view<Position, PolygonCollider, Rotatable>();
-/*
+
   auto ent = *(polygons.begin());
   Position &position = polygons.get<Position>(ent);
   ImGui::Begin("Win");
   ImGui::SliderFloat("Pos X", &position.x, 0, 1280);
   ImGui::SliderFloat("Pos Y", &position.y, 0, 720);
   ImGui::End();
-  */
 
   auto renderer = m_engine->m_graphics->m_renderer;
   SDL_SetRenderDrawColor(renderer, 255, 0, 0, 128);
@@ -135,7 +141,7 @@ void CollisionSystem::on_render(entt::registry &registry) {
     for (int a = 0; a < col.points.size(); a++) {
 
       Vector2 point1 = col.points[a];
-      Vector2 point2 = col.points[(a+1) % col.points.size()];
+      Vector2 point2 = col.points[(a + 1) % col.points.size()];
 
       /*      point1 = RotateVector2D(point1, rot.rotation);
             point2 = RotateVector2D(point2, rot.rotation);*/

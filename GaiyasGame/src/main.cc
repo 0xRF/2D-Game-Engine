@@ -32,7 +32,6 @@ int main(int argc, char **argv) {
     registry.emplace<Rotatable>(entity, Rotatable());
     registry.emplace<PolygonCollider>(
         entity, BoxCollider(texture->get_width(), texture->get_height()));
-    registry.emplace<RigidBody>(entity, RigidBody());
 
     entity = registry.create();
     registry.emplace<Position>(entity, Position(10.0f, 10.0f));
@@ -40,6 +39,7 @@ int main(int argc, char **argv) {
     registry.emplace<Rotatable>(entity, Rotatable());
     registry.emplace<PolygonCollider>(
     entity, BoxCollider(texture->get_width(), texture->get_height()));
+    registry.emplace<RigidBody>(entity, RigidBody());
 
   });
 
