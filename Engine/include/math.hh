@@ -1,4 +1,5 @@
 #include "common.hh"
+#include "vector.hh"
 #include <math.h>
 
 static inline Vector2 RotateVector2D(Vector2 point, float angle) {
@@ -12,4 +13,11 @@ static inline float DotProduct(Vector2 v1, Vector2 v2) {
 static inline Vector2 Normalize(const Vector2 &v) {
   float s = 1 / sqrt(v.x * v.x + v.y * v.y);
   return {v.x * s, v.y * s};
+}
+
+static inline std::vector<Vector2> RebaseVectors(std::vector<Vector2> vecs, Vector2 base){
+    std::vector<Vector2> ret(vecs.size());
+    for(int i = 0; i < vecs.size(); i++)
+        ret[i] = vecs[i] + base;
+    return ret;
 }

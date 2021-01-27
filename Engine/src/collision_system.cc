@@ -7,8 +7,10 @@
 #include "../include/engine.hh"
 #include "../include/log.hh"
 #include "../include/math.hh"
+#include "../include/utils.hh"
 #include "../internal/graphics_system.hh"
 #include <SDL_render.h>
+#include <algorithm>
 #include <imgui.h>
 #include <limits>
 #include <vector>
@@ -21,62 +23,26 @@ Engine *CollisionSystem::m_engine = nullptr;
 bool CollisionSystem::Collides(Position t1, PolygonCollider p1, Rotatable rot1,
                                Position t2, PolygonCollider p2,
                                Rotatable rot2) {
-  std::vector<Vector2> _poly1(p1.points.size());
-  std::vector<Vector2> _poly2(p2.points.size());
-
-  for (int i = 0; i < _poly1.size(); i++) {
-    //_poly1[i] = RotateVector2D(p1.points[i], rot2.rotation);
-    _poly1[i] = p1.points[i];
-    _poly1[i].x += t1.x;
-    _poly1[i].y += t1.y;
-  }
-
-  for (int i = 0; i < _poly2.size(); i++) {
-    //_poly2[i] = RotateVector2D(p2.points[i], rot2.rotation);
-    _poly2[i] = p2.points[i];
-    _poly2[i].x += t2.x;
-    _poly2[i].y += t2.y;
-  }
-  std::vector<Vector2> *poly1 = &_poly1;
-  std::vector<Vector2> *poly2 = &_poly2;
+  std::vector<Vector2> poly1 = RebaseVectors(p1.points, t1);
+  std::vector<Vector2> poly2 = RebaseVectors(p2.points, t2);
 
   for (int i = 0; i < 2; i++) {
-    if (i == 1) {
-      poly1 = &_poly2;
-      poly2 = &_poly1;
-    }
 
-    for (int a = 0; a < poly1->size(); a++) {
-      int c = a+1;
-      int b = c % poly1->size();
+    for (int a = 0; a < poly1.size(); a++) {
+      int c = a + 1;
+      int b = c % poly1.size();
 
-      //Vector2 proj_axis = poly1->at(a).twopoints(poly1->at(b)).perpendicular();
-      Vector2 proj_axis = (*poly1)[a].twopoints((*poly1)[b]).perpendicular();
+      Vector2 proj_axis = poly1[a].twopoints(poly1[b]).perpendicular();
 
-//      {-(poly1->at(b).y - poly1->at(a).y),
-  //                         poly1->at(b).x - poly1->at(a).x};
+      auto handler = std::bind(&DotProduct, proj_axis, std::placeholders::_1);
 
-      float min_r1 = std::numeric_limits<float>::max();
-      float max_r1 = -std::numeric_limits<float>::max();
-      for (int p = 0; p < poly1->size(); p++) {
-        float q = DotProduct((poly1->at(p)), proj_axis);
+      auto r1 = utils::find_min_max<float, Vector2>(poly1, handler);
+      auto r2 = utils::find_min_max<float, Vector2>(poly2, handler);
 
-        max_r1 = std::max(max_r1, q);
-        min_r1 = std::min(min_r1, q);
-      }
-
-      float min_r2 = std::numeric_limits<float>::max();
-      float max_r2 = -std::numeric_limits<float>::max();
-      for (int p = 0; p < poly2->size(); p++) {
-        float q = DotProduct((poly2->at(p)), proj_axis);
-
-        max_r2 = std::max(max_r2, q);
-        min_r2 = std::min(min_r2, q);
-      }
-
-      if (!(max_r2 >= min_r1 && max_r1 >= min_r2))
+      if (!(r2.second >= r1.first && r1.second >= r2.first))
         return false;
     }
+    std::swap(poly1, poly2);
   }
   return true;
 }
@@ -95,7 +61,7 @@ void CollisionSystem::update(float dt, entt::registry &registry) {
   for (auto mv = movables.begin(); mv != movables.end(); mv++) {
     PolygonCollider collider1 = movables.get<PolygonCollider>(*mv);
     Position positon1 = movables.get<Position>(*mv);
-    RigidBody rigidbody1 = movables.get<RigidBody>(*mv);
+    RigidBody &rigidbody1 = movables.get<RigidBody>(*mv);
     Rotatable rotation1 = movables.get<Rotatable>(*mv);
 
     for (auto col = collidables.begin(); col != collidables.end(); col++) {
@@ -108,7 +74,6 @@ void CollisionSystem::update(float dt, entt::registry &registry) {
 
       if (Collides(positon1, collider1, rotation1, positon2, collider2,
                    rotation2)) {
-
         rigidbody1.velocity.y = 0.0f;
       }
     }

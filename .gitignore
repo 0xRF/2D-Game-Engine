@@ -6,3 +6,4 @@ cmake-build*/
 CMakeFiles/
 cmake_install.cmake
 compile_commands.json
+imgui.ini
