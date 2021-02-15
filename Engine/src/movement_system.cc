@@ -16,7 +16,9 @@ MovementSystem *MovementSystem::create(Engine *engine) {
   return m_instance;
 }
 
-void MovementSystem::update(float dt, entt::registry &registry) {
+void MovementSystem::update(float dt, entt::registry &registry) {}
+void MovementSystem::update_end(float dt, entt::registry &registry) {
+
   auto entities = registry.view<Position, RigidBody>();
 
   for (auto mv = entities.begin(); mv != entities.end(); mv++) {
@@ -28,7 +30,6 @@ void MovementSystem::update(float dt, entt::registry &registry) {
     pos.y += rigid.velocity.y * dt;
   }
 }
-void MovementSystem::update_end(entt::registry &registry) {}
 void MovementSystem::scene_end(entt::registry &registry) {}
 void MovementSystem::scene_load(entt::registry &registry) {}
 void MovementSystem::shutdown(entt::registry &registry) {}

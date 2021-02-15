@@ -1,14 +1,18 @@
+#include "vector.hh"
 #include <components/box_collider.hh>
 #include <components/component.hh>
 #include <components/position.hh>
 #include <components/renderer.hh>
-#include <components/rigidbody.hh> 
+#include <components/rigidbody.hh>
 #include <components/rotatable.hh>
 #include <engine.hh>
+#include <graphics.hh>
 #include <imgui.h>
 #include <input.hh>
 #include <log.hh>
+#include <math.hh>
 #include <texture_manager.hh>
+#include <window.hh>
 
 using namespace engine;
 
@@ -19,8 +23,8 @@ int main(int argc, char **argv) {
   instance = Engine::initialize();
 
   instance->subscribe_to_start((startfn)[](entt::registry & registry)->void {
-    auto texture =
-        TextureManager::Load("/Users/rf/CLionProjects/Gaiyas/assets/frame-1.png");
+    auto texture = TextureManager::Load(
+        "/Users/rf/CLionProjects/Gaiyas/assets/frame-1.png");
     if (!texture) {
       logl("Failed to load texture");
       return;
@@ -28,28 +32,62 @@ int main(int argc, char **argv) {
 
     auto entity = registry.create();
     registry.emplace<Position>(entity, Position(500, 500));
-    registry.emplace<Renderer>(entity, texture).scale(0.1f);
+    registry.emplace<Renderer>(entity, texture);
     registry.emplace<Rotatable>(entity, Rotatable());
     registry.emplace<PolygonCollider>(
         entity, BoxCollider(texture->get_width(), texture->get_height()));
+    registry.emplace<Scale>(entity, 0.1f);
 
     entity = registry.create();
     registry.emplace<Position>(entity, Position(10.0f, 10.0f));
-    registry.emplace<Renderer>(entity, texture).scale(0.1f);
+    registry.emplace<Renderer>(entity, texture);
     registry.emplace<Rotatable>(entity, Rotatable());
     registry.emplace<PolygonCollider>(
-    entity, BoxCollider(texture->get_width(), texture->get_height()));
+        entity, BoxCollider(texture->get_width(), texture->get_height()));
     registry.emplace<RigidBody>(entity, RigidBody());
-
+    registry.emplace<Scale>(entity, 0.1f);
   });
 
   instance->subscribe_to_update(
       (updatefn)[](entt::registry & registry, float deltaTime)->void {
         if (Input::GetKeyDown(KeyCode::ESCAPE))
           instance->stop();
+
+        auto view = registry.view<RigidBody>();
+        for (auto mv = view.begin(); mv != view.end(); mv++) {
+          static float vel = 15.0f;
+
+          auto &rigid = registry.get<RigidBody>(*mv);
+          if (Input::GetKeyDown(KeyCode::A))
+            rigid.velocity.x -= vel * deltaTime;
+
+          else if (Input::GetKeyDown(KeyCode::D))
+            rigid.velocity.x += vel * deltaTime;
+
+          else if (Input::GetKeyDown(KeyCode::W))
+            rigid.velocity.y -= vel * deltaTime;
+
+          else if (Input::GetKeyDown(KeyCode::S))
+            rigid.velocity.y += vel * deltaTime;
+          if (Input::GetKeyDown(KeyCode::SPACE))
+            rigid.velocity.y = 0;
+        }
       });
 
-  instance->subscribe_to_render([]() -> void { });
+  float angle = 0.0f;
+  float mag = 0.0f;
+  auto window = instance->get_window();
+  Vector2 center = {(float)window->get_width() / 2,
+                    (float)window->get_height() / 2};
+  Vector2 vec = {1, 0};
+
+  instance->subscribe_to_render([&]() -> void {
+    ImGui::SliderFloat("Angle", &angle, 0, 360);
+    ImGui::SliderFloat("Magnitude", &mag, 0, 500);
+    Vector2 v = RotateVector2D(vec, angle);
+    v *= mag;
+    Graphics::DrawLine(center, v + center);
+  });
   instance->run();
 
   return 0;

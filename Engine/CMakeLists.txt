@@ -42,10 +42,14 @@ add_library(
         include/texture.hh src/texture.cc
         internal/graphics_system.hh src/grapics_system.cc
         internal/movement_system.hh src/movement_system.cc
+        include/components/component.hh
+        include/components/scale.hh
+
         
 
         internal/physics_system.hh internal/collision_system.hh
         src/physics_system.cc src/collision_system.cc
+        include/graphics.hh src/graphics.cc
 
         "${imgui_sdl_INCLUDE_DIR}/imgui_sdl.cpp"
                 "${imgui_sdl_INCLUDE_DIR}/imgui_sdl.h"

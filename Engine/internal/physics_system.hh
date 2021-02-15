@@ -16,7 +16,7 @@ private:
     static PhysicsSystem *m_instance;
 
     void update(float dt, entt::registry &registry);
-    void update_end(entt::registry &registry);
+    void update_end(float dt, entt::registry &registry);
     void scene_end(entt::registry &registry);
     void scene_load(entt::registry &registry);
     void shutdown(entt::registry &registry);

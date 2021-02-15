@@ -14,11 +14,4 @@ struct Renderer {
         width = _texture->get_width();
         height = _texture->get_height();
     }
-
-    inline void scale(float scale)
-    {
-        width = width * scale;
-        height = height * scale;
-        engine::logl("scaled");
-    }
 };

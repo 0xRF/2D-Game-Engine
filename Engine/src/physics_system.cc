@@ -16,7 +16,7 @@ void PhysicsSystem::update(float dt, entt::registry &registry) {
   auto view = registry.view<RigidBody>();
   view.each([&](RigidBody &rigid) { rigid.velocity.y += gravity * dt; });
 }
-void PhysicsSystem::update_end(entt::registry &registry) {}
+void PhysicsSystem::update_end(float dt, entt::registry &registry) {}
 void PhysicsSystem::scene_end(entt::registry &registry) {}
 void PhysicsSystem::scene_load(entt::registry &registry) {}
 void PhysicsSystem::shutdown(entt::registry &registry) {}
