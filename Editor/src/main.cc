@@ -31,6 +31,7 @@ int main(int argc, char **argv) {
   instance->subscribe_to_start((startfn)[](entt::registry & registry)->void{});
 
   std::vector<Resource<int>> meme;
+  std::string json_str;
 
   instance->subscribe_to_render([&]() -> void {
     ImVec2 a;
@@ -44,13 +45,13 @@ int main(int argc, char **argv) {
         meme.push_back(Resource<int>((int)(rand() * 32), "MEME"));
       }
       if (ImGui::Button("Update JSON")) {
-        meme.push_back(Resource<int>((int)(rand() * 32), "MEME"));
       }
-
+      ImGui::Text("%s", json_str.c_str());
     }
     ImGui::End();
   });
   instance->run();
+
 
   return 0;
 }
