@@ -16,13 +16,14 @@ namespace engine
         static Window *create(const std::string &name, unsigned int width, unsigned int height);
         static bool initialize();
 
-        const std::string &get_name(void) const;
-        void set_name(const std::string &name);
+        const static std::string &GetName(void);
+        static void SetName(const std::string &name);
 
-        uint32_t get_width();
-        uint32_t get_height();
+        static uint32_t GetWidth();
+        static uint32_t GetHeight();
 
     private:
+        static Window* m_instance;
 
         Window(std::string name, SDL_Window *window);
         friend internal::GraphicsSystem;

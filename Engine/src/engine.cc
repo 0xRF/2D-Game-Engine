@@ -58,12 +58,11 @@ Engine *Engine::initialize() {
     delete instance;
     return nullptr;
   }
-
-  if (!instance->register_system(internal::CollisionSystem::create(instance))) {
-    logl("Failed to init collision_system");
-    delete instance;
-    return nullptr;
-  }
+  /*
+    if (!instance->register_system(internal::CollisionSystem::create(instance)))
+    { logl("Failed to init collision_system"); delete instance; return nullptr;
+    }
+    */
 
   if (!instance->register_system(internal::MovementSystem::create(instance))) {
     logl("Failed to init movement_system");

@@ -21,7 +21,7 @@ class CollisionSystem : public System {
 public:
   static CollisionSystem *create(Engine *engine);
 
-  static std::unique_ptr<Vector2>
+  static std::unique_ptr<std::vector<Vector2>>
   Collides(Position t1, PolygonCollider p1, Rotatable rot1, Scale scale1,
            Position t2, PolygonCollider p2, Rotatable rot2, Scale scale2);
 

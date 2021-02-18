@@ -10,7 +10,7 @@ class PhysicsSystem : public System {
 
 public:
     static PhysicsSystem *create(Engine *engine);
-    float gravity = 9.8f;
+    float gravity = 0;//9.8f;
 
 private:
     static PhysicsSystem *m_instance;

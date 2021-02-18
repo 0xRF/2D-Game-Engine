@@ -46,8 +46,8 @@ GraphicsSystem *GraphicsSystem::create(Engine *engine) {
 
   ImGui::CreateContext();
   ImGuiSDL::Initialize(m_instance->m_renderer,
-                       engine->get_window()->get_width(),
-                       engine->get_window()->get_height());
+                       Window::GetWidth(),
+                       Window::GetHeight());
 
   engine->subscibe_to_event(SDL_WINDOWEVENT, [](SDL_Event e) {
     ImGuiIO &io = ImGui::GetIO();

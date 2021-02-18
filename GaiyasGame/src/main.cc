@@ -23,8 +23,8 @@ int main(int argc, char **argv) {
   instance = Engine::initialize();
 
   instance->subscribe_to_start((startfn)[](entt::registry & registry)->void {
-    auto texture = TextureManager::Load(
-        "/Users/rf/CLionProjects/Gaiyas/assets/frame-1.png");
+    auto texture =
+        TextureManager::Load("/home/rf/Projects/c++/gaiyas/assets/frame-1.png");
     if (!texture) {
       logl("Failed to load texture");
       return;
@@ -55,30 +55,31 @@ int main(int argc, char **argv) {
 
         auto view = registry.view<RigidBody>();
         for (auto mv = view.begin(); mv != view.end(); mv++) {
-          static float vel = 15.0f;
+          static float vel = 32.0f;
 
           auto &rigid = registry.get<RigidBody>(*mv);
           if (Input::GetKeyDown(KeyCode::A))
-            rigid.velocity.x -= vel * deltaTime;
+            rigid.velocity.x = -vel;
 
           else if (Input::GetKeyDown(KeyCode::D))
-            rigid.velocity.x += vel * deltaTime;
+            rigid.velocity.x = vel;
 
           else if (Input::GetKeyDown(KeyCode::W))
-            rigid.velocity.y -= vel * deltaTime;
+            rigid.velocity.y = -vel;
 
           else if (Input::GetKeyDown(KeyCode::S))
-            rigid.velocity.y += vel * deltaTime;
-          if (Input::GetKeyDown(KeyCode::SPACE))
+            rigid.velocity.y = vel;
+          if (Input::GetKeyDown(KeyCode::SPACE)) {
             rigid.velocity.y = 0;
+            rigid.velocity.x = 0;
+          }
         }
       });
 
   float angle = 0.0f;
   float mag = 0.0f;
-  auto window = instance->get_window();
-  Vector2 center = {(float)window->get_width() / 2,
-                    (float)window->get_height() / 2};
+  Vector2 center = {(float)Window::GetWidth() / 2,
+                    (float)Window::GetHeight() / 2};
   Vector2 vec = {1, 0};
 
   instance->subscribe_to_render([&]() -> void {
@@ -86,6 +87,7 @@ int main(int argc, char **argv) {
     ImGui::SliderFloat("Magnitude", &mag, 0, 500);
     Vector2 v = RotateVector2D(vec, angle);
     v *= mag;
+    Graphics::DrawLine(center, v + center);
     Graphics::DrawLine(center, v + center);
   });
   instance->run();
