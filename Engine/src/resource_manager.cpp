@@ -14,5 +14,5 @@ void ResourceManager::SetResouceFile(std::filesystem::path resource_directory) {
   std::string jsonstr((std::istreambuf_iterator<char>(ifs)),
                       std::istreambuf_iterator<char>());
 
-  auto j = json::parse(jsonstr);
+  //auto j = json::parse(jsonstr);
 }

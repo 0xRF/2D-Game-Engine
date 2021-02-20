@@ -21,16 +21,14 @@ if(EnTT_ADDED)
 endif()
 
 CPMAddPackage(
-  NAME nlohmann_json
-  VERSION 3.9.1  
-  # the git repo is incredibly large, so we download the archived include directory
-  URL https://github.com/nlohmann/json/releases/download/v3.9.1/include.zip
-  URL_HASH SHA256=6bea5877b1541d353bd77bdfbdb2696333ae5ed8f9e8cc22df657192218cad91
+  NAME pjsoncons
+  VERSION 0.162.0
+  GITHUB_REPOSITORY danielaparker/jsoncons
 )
 
-if (nlohmann_json_ADDED)
-  add_library(nlohmann_json INTERFACE IMPORTED)
-  target_include_directories(nlohmann_json INTERFACE ${nlohmann_json_SOURCE_DIR}/single_include)
+if (pjsoncons_ADDED)
+  add_library(pjsoncons INTERFACE IMPORTED)
+  target_include_directories(pjsoncons INTERFACE ${pjsoncons_SOURCE_DIR}/include)
 endif()
 
 set(ENGINE_INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include PARENT_SCOPE)
@@ -72,5 +70,5 @@ add_library(
 
 include_directories(${SDL2_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${imgui_INCLUDE_DIR} ${imgui_sdl_INCLUDE_DIR} )
 
-target_link_libraries(Engine ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} EnTT imgui nlohmann_json)
+target_link_libraries(Engine ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} EnTT imgui pjsoncons)
 

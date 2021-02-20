@@ -11,7 +11,6 @@
 #include <input.hh>
 #include <log.hh>
 #include <math.hh>
-#include <resource_manager.hh>
 #include <texture_manager.hh>
 #include <window.hh>
 
@@ -29,6 +28,11 @@ int main(int argc, char **argv) {
   ResourceManager::SetResouceFile("res");
 
   instance->subscribe_to_start((startfn)[](entt::registry & registry)->void{});
+  instance->subscribe_to_update(
+      [&](entt::registry &registry, float dt) -> void {
+        if (Input::GetKeyDown(KeyCode::ESCAPE))
+          instance->stop();
+      });
 
   std::vector<Resource<int>> meme;
   std::string json_str;
@@ -45,13 +49,17 @@ int main(int argc, char **argv) {
         meme.push_back(Resource<int>((int)(rand() * 32), "MEME"));
       }
       if (ImGui::Button("Update JSON")) {
+        for (auto itm : meme) {
+          json j = itm._json();
+
+        }
       }
-      ImGui::Text("%s", json_str.c_str());
+      std::string s = jObj.dump();
+      ImGui::Text("%s", s.c_str());
     }
     ImGui::End();
   });
   instance->run();
-
 
   return 0;
 }
