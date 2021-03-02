@@ -51,24 +51,23 @@ add_library(
         include/components/rotatable.hh
         include/texture_manager.hh src/texture_manager.cc
         include/texture.hh src/texture.cc
-        internal/graphics_system.hh src/grapics_system.cc
-        internal/movement_system.hh src/movement_system.cc
+        internal/graphics_system.hh src/graphics_system.cc
+        include/systems/movement_system.hh src/movement_system.cc
         include/components/component.hh
         include/components/scale.hh
         include/resource.hh
         include/resource_manager.hh
         src/resource_manager.cpp
 
-        internal/physics_system.hh internal/collision_system.hh
+        include/systems/physics_system.hh include/systems/collision_system.hh
         src/physics_system.cc src/collision_system.cc
         include/graphics.hh src/graphics.cc
-
+ 
         "${imgui_sdl_INCLUDE_DIR}/imgui_sdl.cpp"
         "${imgui_sdl_INCLUDE_DIR}/imgui_sdl.h"
-
 )
 
-include_directories(${SDL2_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${imgui_INCLUDE_DIR} ${imgui_sdl_INCLUDE_DIR} )
+include_directories(${SDL2_INCLUDE_DIR} ${SDL2_IMAGE_INCLUDE_DIR} ${imgui_INCLUDE_DIR} ${imgui_sdl_INCLUDE_DIR} ${imfilebrowser_INCLUDE_DIR})
 
 target_link_libraries(Engine ${SDL2_LIBRARY} ${SDL2_IMAGE_LIBRARIES} EnTT imgui pjsoncons)
 

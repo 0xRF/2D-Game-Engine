@@ -1,10 +1,9 @@
-#include "../internal/physics_system.hh"
+#include "../include/systems/physics_system.hh"
 #include "../include/components/box_collider.hh"
-
 #include "../include/components/position.hh"
 #include "../include/components/rigidbody.hh"
 
-namespace engine::internal {
+namespace engine::systems {
 
 PhysicsSystem *PhysicsSystem::m_instance = nullptr;
 

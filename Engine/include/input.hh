@@ -78,11 +78,9 @@ enum KeyCode {
     Z = 'z'
 };
 
-class Engine;
-
 class Input {
 public:
-    static bool initialize(Engine *instance);
+    static bool Initialize();
     static bool GetKeyDown(const KeyCode key);
     static bool GetKeyUp(const KeyCode key);
 

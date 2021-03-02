@@ -2,72 +2,69 @@
 #include "../include/input.hh"
 #include "../include/log.hh"
 #include "../include/system.hh"
+#include "../include/systems/collision_system.hh"
+#include "../include/systems/movement_system.hh"
+#include "../include/systems/physics_system.hh"
 #include "../include/texture.hh"
 #include "../include/texture_manager.hh"
 #include "../include/window.hh"
-#include "../internal/collision_system.hh"
 #include "../internal/graphics_system.hh"
-#include "../internal/movement_system.hh"
-#include "../internal/physics_system.hh"
 
 #include <SDL.h>
 
 namespace engine {
+static std::shared_ptr<Engine> instance;
 
-Engine *Engine::initialize() {
+Engine::Engine() { instance->m_window = Window::create("Test", 1280, 720); }
 
-  Engine *instance = new Engine;
+std::optional<Engine> Engine::Initialize() {
+
+  Engine engine = Engine();
 
   if (SDL_Init(0) != 0) {
-    log("Failed to init sdl");
-    delete instance;
-    return nullptr;
+    logl("Failed to init sdl");
+    return std::nullopt;
   }
 
-  if (!Window::initialize()) {
-    log("Failed to init Window");
-    delete instance;
-    return nullptr;
+  if (!Window::Initialize()) {
+    logl("Failed to init Window");
+    return std::nullopt;
   }
 
-  instance->m_window = Window::create("Test", 1280, 720);
-
-  logl("Init Input");
-  if (!Input::initialize(instance)) {
-    log("Failed to init input");
-    delete instance;
-    return nullptr;
+  if (!Input::Initialize()) {
+    logl("Failed to init input");
+    return std::nullopt;
+  }
+  if(!internal::GraphicsSystem::Initialize())
+  {
+      logl("Failed to init graphics_system");
+      return std::nullopt;
   }
 
-  instance->m_graphics = internal::GraphicsSystem::create(instance);
+  instance->m_graphics = internal::GraphicsSystem::Create(instance);
   if (!instance->register_system(instance->m_graphics)) {
     logl("Failed to init texture_manager");
-    delete instance;
-    return nullptr;
+    return std::nullopt;
   }
 
   instance->m_texture_manager = TextureManager::create(instance);
   if (!instance->m_texture_manager) {
     logl("Failed to init texture_manager");
-    delete instance;
-    return nullptr;
+    return std::nullopt;
   }
 
-  if (!instance->register_system(internal::PhysicsSystem::create(instance))) {
+  if (!instance->register_system(systems::PhysicsSystem::create(instance))) {
     logl("Failed to init physics_system");
-    delete instance;
-    return nullptr;
+    return std::nullopt;
   }
-  /*
-    if (!instance->register_system(internal::CollisionSystem::create(instance)))
-    { logl("Failed to init collision_system"); delete instance; return nullptr;
-    }
-    */
+  if (!instance->register_system(systems::CollisionSystem::create(instance))) {
+    logl("Failed to init collision_system");
+    return std::nullopt;
+  }
 
-  if (!instance->register_system(internal::MovementSystem::create(instance))) {
+  if (!instance->register_system(systems::MovementSystem::create(instance))) {
     logl("Failed to init movement_system");
-    delete instance;
-    return nullptr;
+    return std::nullopt;
   }
 
   return instance;
@@ -129,26 +126,23 @@ void Engine::stop() {
   m_alive = false;
 }
 
-void Engine::subscibe_to_event(uint32_t type, eventfn func) {
-  m_event_queue.emplace_back(type, func);
+void Engine::SubscibeToEvent(uint32_t type, eventfn func) {
+  instance->m_event_queue.emplace_back(type, func);
 }
-void Engine::subscribe_to_update(updatefn func) {
-  m_update_queue.emplace_back(func);
-}
-
-void Engine::subscribe_to_post_update(updatefn func) {
-  m_post_update_queue.emplace_back(func);
+void Engine::SubscribeToUpdate(updatefn func) {
+  instance->m_update_queue.emplace_back(func);
 }
 
-void Engine::subscribe_to_start(startfn func) { m_start_queue.push_back(func); }
-
-System *Engine::register_system(System *sys) {
-  m_systems.push_back(sys);
-  return sys;
+void Engine::SubscribeToPostUpdate(updatefn func) {
+  instance->m_post_update_queue.emplace_back(func);
 }
 
-void Engine::subscribe_to_render(renderfn func) {
-  m_render_queue.push_back(func);
+void Engine::SubscribeToStart(startfn func) {
+  instance->m_start_queue.push_back(func);
+}
+
+void Engine::SubscribeToRender(renderfn func) {
+  instance->m_render_queue.push_back(func);
 }
 
 Engine::Engine() {}

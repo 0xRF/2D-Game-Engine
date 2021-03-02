@@ -1,19 +1,21 @@
-
 #pragma once
 
-#include "../include/system.hh"
+#include "../system.hh"
+
 
 namespace engine {
-namespace internal {
 
-class PhysicsSystem : public System {
+namespace systems {
+
+class MovementSystem : public System {
 
 public:
-    static PhysicsSystem *create(Engine *engine);
-    float gravity = 0;//9.8f;
+    static MovementSystem *create(Engine *engine);
+
 
 private:
-    static PhysicsSystem *m_instance;
+    static MovementSystem *m_instance;
+    static Engine* m_engine;
 
     void update(float dt, entt::registry &registry);
     void update_end(float dt, entt::registry &registry);
@@ -26,4 +28,3 @@ private:
 
 } // namespace internal
 } // namespace engine
-

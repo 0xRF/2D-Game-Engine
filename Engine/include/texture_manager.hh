@@ -1,4 +1,6 @@
- #include "common.hh"
+#pragma once
+
+#include "common.hh"
 
 namespace engine {
 class Texture;

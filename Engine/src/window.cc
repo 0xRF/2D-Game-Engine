@@ -7,7 +7,7 @@ namespace engine {
 
 Window *Window::m_instance = nullptr;
 
-bool Window::initialize() {
+bool Window::Initialize() {
   logl("Initing window");
   if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0) {
     log("Failed to initialize Window %s", SDL_GetError());

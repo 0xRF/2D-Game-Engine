@@ -1,20 +1,20 @@
 
 #pragma once
 
-#include "../include/components/component.hh"
-#include "../include/system.hh"
+#include "../components/component.hh"
+#include "../system.hh"
 #include <memory>
 
 struct BoxCollider;
-struct Engine;
 typedef Vector2 Position;
 struct PolygonCollider;
 struct RigidBody;
 struct Rotatable;
 
 namespace engine {
+struct Engine;
 
-namespace internal {
+namespace systems {
 
 class CollisionSystem : public System {
 

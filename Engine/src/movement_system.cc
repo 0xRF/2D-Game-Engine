@@ -1,11 +1,11 @@
-#include "../internal/movement_system.hh"
+#include "../include/systems/movement_system.hh"
 #include "../include/components/position.hh"
 #include "../include/components/rigidbody.hh"
 #include "../include/engine.hh"
 #include "../include/log.hh"
 #include <imgui.h>
 
-namespace engine::internal {
+namespace engine::systems {
 
 MovementSystem *MovementSystem::m_instance = nullptr;
 Engine *MovementSystem::m_engine = nullptr;

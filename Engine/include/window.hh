@@ -14,7 +14,7 @@ namespace engine
     class Window {
     public:
         static Window *create(const std::string &name, unsigned int width, unsigned int height);
-        static bool initialize();
+        static bool Initialize();
 
         const static std::string &GetName(void);
         static void SetName(const std::string &name);

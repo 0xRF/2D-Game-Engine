@@ -11,54 +11,39 @@
 #include <input.hh>
 #include <log.hh>
 #include <math.hh>
+#include <resource.hh>
+#include <resource_manager.hh>
 #include <texture_manager.hh>
 #include <window.hh>
 
-#include <resource.hh>
-#include <resource_manager.hh>
+#include "../include/inspector_window.hh"
+#include "../include/resource_window.hh"
+#include "../include/systems/collision_system.hh"
+#include "../include/systems/movement_system.hh"
+#include "../include/systems/physics_system.hh"
 
 using namespace engine;
 
-static Engine *instance = nullptr;
-
 int main(int argc, char **argv) {
+  Engine instance = Engine::Initialize();
 
-  instance = Engine::initialize();
+  instance->disable_system<systems::PhysicsSystem>();
+  instance->disable_system<systems::CollisionSystem>();
+  instance->disable_system<systems::MovementSystem>();
 
-  ResourceManager::SetResouceFile("res");
+  instance->register_system(new InspectorWindow());
+  instance->register_system(new ResourceWindow());
 
-  instance->subscribe_to_start((startfn)[](entt::registry & registry)->void{});
+  ResourceManager::SetResouceFile(
+      "/home/rf/Projects/c++/gaiyas/resources.json");
+
+  instance->subscribe_to_start([](entt::registry &registry) -> void {});
   instance->subscribe_to_update(
       [&](entt::registry &registry, float dt) -> void {
         if (Input::GetKeyDown(KeyCode::ESCAPE))
           instance->stop();
       });
 
-  std::vector<Resource<int>> meme;
-  std::string json_str;
-
-  instance->subscribe_to_render([&]() -> void {
-    ImVec2 a;
-    ImGui::SetNextWindowPos({0, 0}, ImGuiCond_Always);
-    ImGui::SetNextWindowSizeConstraints(
-        {(float)Window::GetWidth() / 5, (float)Window::GetHeight()},
-        {(float)Window::GetWidth(), (float)Window::GetHeight()});
-    ImGui::Begin("Tree");
-    {
-      if (ImGui::Button("Add")) {
-        meme.push_back(Resource<int>((int)(rand() * 32), "MEME"));
-      }
-      if (ImGui::Button("Update JSON")) {
-        for (auto itm : meme) {
-          json j = itm._json();
-
-        }
-      }
-      std::string s = jObj.dump();
-      ImGui::Text("%s", s.c_str());
-    }
-    ImGui::End();
-  });
   instance->run();
 
   return 0;

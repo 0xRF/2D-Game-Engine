@@ -3,6 +3,7 @@
 #include "../include/system.hh"
 
 struct SDL_Renderer;
+struct SDL_Event;
 
 namespace engine {
 class Engine;
@@ -11,13 +12,16 @@ namespace internal {
 
 class GraphicsSystem : public System {
 
+
 public:
-    static GraphicsSystem *create(Engine *engine);
-    SDL_Renderer* m_renderer;
+    static bool Initialize();
+    static std::optional<GraphicsSystem> Create();
+    GraphicsSystem(const  GraphicsSystem&) = delete;
 
 private:
+    void WindowResized(SDL_Event e);
     GraphicsSystem();
-    static GraphicsSystem* m_instance;
+
     friend Engine;
     friend TextureManager;
 
@@ -29,6 +33,10 @@ private:
     void render_begin(entt::registry &registry);
     void on_render(entt::registry &registry);
     void render_end();
+
+
+    static GraphicsSystem* m_instance;
+    SDL_Renderer* m_renderer;
 };
 
 } // namespace internal
