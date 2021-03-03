@@ -18,6 +18,7 @@ bool Window::Initialize() {
 
 Window *Window::create(const std::string &name, unsigned int w,
                        unsigned int h) {
+  DEBUG_ASSERT(m_instance == nullptr);
   logl("Creating Window");
   SDL_Window *window =
       SDL_CreateWindow(name.c_str(), SDL_WINDOWPOS_CENTERED,
@@ -49,10 +50,7 @@ uint32_t Window::GetHeight() {
   return y;
 }
 
-void* Window::GetWindowHandle(){
-    return (void*)m_window;
-}
+void *Window::GetWindowHandle() { return (void *)m_instance->m_window; }
 
 Window::Window(std::string name, SDL_Window *window)
-    : m_name(std::move(name)), m_window(window) {}
-}; // namespace engine
+    : m_name(std::move(name)), m_window(window){}; // namespace engine

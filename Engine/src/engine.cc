@@ -13,9 +13,17 @@
 #include <SDL.h>
 
 namespace engine {
-static std::shared_ptr<Engine> instance;
+static std::weak_ptr<Engine> instance;
 
-Engine::Engine() { instance->m_window = Window::create("Test", 1280, 720); }
+Engine::Engine()
+    : m_window(std::unique_ptr<Window>(Window::create("Test", 1280, 720))) {
+
+  DEBUG_ASSERT(instance == nullptr);
+  auto a = std::weak_ptr<Engine>(this);
+  instance = a;
+}
+
+Engine::~Engine() {}
 
 std::optional<Engine> Engine::Initialize() {
 
@@ -49,10 +57,8 @@ std::optional<Engine> Engine::Initialize() {
   instance->register_system<systems::CollisionSystem>();
   instance->register_system<systems::MovementSystem>();
 
-  return std::optional<Engine>(std::move(instance));
+  return std::make_optional<Engine>(std::move(*instance));
 }
-
-Window *Engine::get_window() const { return m_window; }
 
 void Engine::run() {
   m_alive = true;
@@ -126,6 +132,4 @@ void Engine::SubscribeToStart(startfn func) {
 void Engine::SubscribeToRender(renderfn func) {
   instance->m_render_queue.push_back(func);
 }
-
-Engine::~Engine() { delete m_window; }
 }; // namespace engine

@@ -28,7 +28,6 @@ namespace engine
         static Window* m_instance;
 
         Window(std::string name, SDL_Window *window);
-        friend internal::GraphicsSystem;
 
         std::string m_name;
         SDL_Window* m_window;

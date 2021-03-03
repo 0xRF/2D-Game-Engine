@@ -25,8 +25,6 @@ public:
 
   static std::optional<Engine> Initialize();
 
-  Window *get_window() const;
-
   void run();
 
   void stop();
@@ -50,8 +48,7 @@ public:
   static void SubscribeToRender(renderfn func);
 
 private:
-  Window *m_window;
-  TextureManager *m_texture_manager;
+  std::unique_ptr<Window> m_window;
   std::vector<System *> m_systems{};
 
   bool m_alive = false;
