@@ -25,24 +25,25 @@
 using namespace engine;
 
 int main(int argc, char **argv) {
-  Engine instance = Engine::Initialize();
+  std::optional<Engine> instance = Engine::Initialize();
+
+  DEBUG_ASSERT(instance.has_value());
 
   instance->disable_system<systems::PhysicsSystem>();
   instance->disable_system<systems::CollisionSystem>();
   instance->disable_system<systems::MovementSystem>();
 
-  instance->register_system(new InspectorWindow());
-  instance->register_system(new ResourceWindow());
+  instance->register_system<InspectorWindow>();
+  instance->register_system<ResourceWindow>();
 
   ResourceManager::SetResouceFile(
       "/home/rf/Projects/c++/gaiyas/resources.json");
 
-  instance->subscribe_to_start([](entt::registry &registry) -> void {});
-  instance->subscribe_to_update(
-      [&](entt::registry &registry, float dt) -> void {
-        if (Input::GetKeyDown(KeyCode::ESCAPE))
-          instance->stop();
-      });
+  Engine::SubscribeToStart([](entt::registry &registry) -> void {});
+  Engine::SubscribeToUpdate([&](entt::registry &registry, float dt) -> void {
+    if (Input::GetKeyDown(KeyCode::ESCAPE))
+      instance->stop();
+  });
 
   instance->run();
 

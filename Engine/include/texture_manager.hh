@@ -8,11 +8,12 @@ class Engine;
 
 class TextureManager {
     public:
+    static bool Initialize();
     static std::shared_ptr<Texture> Load(const std::filesystem::path file);
+    TextureManager() = delete;
+    TextureManager(const TextureManager&) = delete;
 
 private:
-    static TextureManager* create(Engine* engine);
-    TextureManager();
     static TextureManager* m_instance;
     Engine* m_engine;
     friend Engine;

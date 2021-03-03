@@ -1,6 +1,7 @@
 #pragma once
 
 #include "common.hh"
+#include "log.hh"
 
 union SDL_Event;
 
@@ -9,9 +10,6 @@ namespace engine {
 class Window;
 struct Frame;
 class TextureManager;
-namespace internal {
-    class GraphicsSystem;
-}
 class System;
 
 using eventfn = std::function<void(const SDL_Event)>;
@@ -33,18 +31,16 @@ public:
 
   void stop();
 
-  template <typename T> T *register_system(T *sys) {
+  template <typename T> void disable_system() {
+    std::remove_if(m_systems.begin(), m_systems.end(), [](auto sys) -> bool {
+      return dynamic_cast<T *>(sys) != nullptr;
+    });
+  }
 
-    auto it =
-        std::find_if(m_systems.begin(), m_systems.end(), [](auto sys) -> bool {
-          return dynamic_cast<T *>(sys) != nullptr;
-        });
-
-    if (it != m_systems.end())
-      return dynamic_cast<T *>(*it);
-
-    m_systems.push_back(sys);
-    return sys;
+  template <typename T> void register_system() {
+    static bool enabled = false;
+    DEBUG_ASSERT(!enabled);
+    m_systems.push_back(new T());
   }
 
   static void SubscribeToStart(startfn func);
@@ -52,13 +48,6 @@ public:
   static void SubscribeToUpdate(updatefn func);
   static void SubscribeToPostUpdate(updatefn func);
   static void SubscribeToRender(renderfn func);
-
-  template <typename T> void disable_system() {
-    std::remove_if(m_systems.begin(), m_systems.end(), [](auto sys) -> bool {
-      return dynamic_cast<T *>(sys) != nullptr;
-    });
-  }
-  internal::GraphicsSystem *m_graphics;
 
 private:
   Window *m_window;
@@ -71,7 +60,7 @@ private:
   std::vector<updatefn> m_post_update_queue{};
   std::vector<renderfn> m_render_queue{};
   std::vector<startfn> m_start_queue{};
-  entt::registry registry;
+  entt::registry m_registry;
 
   friend TextureManager;
 };

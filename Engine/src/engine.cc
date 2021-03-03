@@ -1,4 +1,5 @@
 #include "../include/engine.hh"
+#include "../include/graphics.hh"
 #include "../include/input.hh"
 #include "../include/log.hh"
 #include "../include/system.hh"
@@ -8,7 +9,6 @@
 #include "../include/texture.hh"
 #include "../include/texture_manager.hh"
 #include "../include/window.hh"
-#include "../internal/graphics_system.hh"
 
 #include <SDL.h>
 
@@ -35,39 +35,21 @@ std::optional<Engine> Engine::Initialize() {
     logl("Failed to init input");
     return std::nullopt;
   }
-  if(!internal::GraphicsSystem::Initialize())
-  {
-      logl("Failed to init graphics_system");
-      return std::nullopt;
+  if (!Graphics::Initialize()) {
+    logl("Failed to init graphics_system");
+    return std::nullopt;
   }
 
-  instance->m_graphics = internal::GraphicsSystem::Create(instance);
-  if (!instance->register_system(instance->m_graphics)) {
+  if (!TextureManager::Initialize()) {
     logl("Failed to init texture_manager");
     return std::nullopt;
   }
 
-  instance->m_texture_manager = TextureManager::create(instance);
-  if (!instance->m_texture_manager) {
-    logl("Failed to init texture_manager");
-    return std::nullopt;
-  }
+  instance->register_system<systems::PhysicsSystem>();
+  instance->register_system<systems::CollisionSystem>();
+  instance->register_system<systems::MovementSystem>();
 
-  if (!instance->register_system(systems::PhysicsSystem::create(instance))) {
-    logl("Failed to init physics_system");
-    return std::nullopt;
-  }
-  if (!instance->register_system(systems::CollisionSystem::create(instance))) {
-    logl("Failed to init collision_system");
-    return std::nullopt;
-  }
-
-  if (!instance->register_system(systems::MovementSystem::create(instance))) {
-    logl("Failed to init movement_system");
-    return std::nullopt;
-  }
-
-  return instance;
+  return std::optional<Engine>(std::move(instance));
 }
 
 Window *Engine::get_window() const { return m_window; }
@@ -77,10 +59,10 @@ void Engine::run() {
   float deltaTime = 0.0f;
 
   for (auto fn : m_start_queue)
-    fn(registry);
+    fn(m_registry);
 
   for (auto sys : m_systems)
-    sys->scene_load(registry);
+    sys->scene_load(m_registry);
 
   while (m_alive) {
 
@@ -93,26 +75,26 @@ void Engine::run() {
     Uint32 t1 = SDL_GetTicks();
 
     for (auto fn : m_update_queue)
-      fn(registry, deltaTime);
+      fn(m_registry, deltaTime);
 
     for (auto sys : m_systems)
-      sys->update(deltaTime, registry);
+      sys->update(deltaTime, m_registry);
 
     for (auto fn : m_post_update_queue)
-      fn(registry, deltaTime);
+      fn(m_registry, deltaTime);
 
     for (auto sys : m_systems)
-      sys->update_end(deltaTime, registry);
+      sys->update_end(deltaTime, m_registry);
 
-    m_graphics->render_begin(registry);
+    Graphics::render_begin(m_registry);
 
     for (auto fn : m_render_queue)
       fn();
 
     for (auto sys : m_systems)
-      sys->on_render(registry);
+      sys->on_render(m_registry);
 
-    m_graphics->render_end();
+    Graphics::render_end();
 
     Uint32 t2 = SDL_GetTicks();
 
@@ -145,7 +127,5 @@ void Engine::SubscribeToRender(renderfn func) {
   instance->m_render_queue.push_back(func);
 }
 
-Engine::Engine() {}
 Engine::~Engine() { delete m_window; }
-
 }; // namespace engine

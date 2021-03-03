@@ -1,5 +1,6 @@
+#pragma once
+
 #include "common.hh"
-#include "vector.hh"
 #include <math.h>
 
 // TODO FIX

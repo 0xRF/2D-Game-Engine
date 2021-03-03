@@ -19,9 +19,8 @@ namespace systems {
 class CollisionSystem : public System {
 
 public:
-  static CollisionSystem *create(Engine *engine);
 
-  static std::unique_ptr<std::vector<Vector2>>
+  std::unique_ptr<std::vector<Vector2>>
   Collides(Position t1, PolygonCollider p1, Rotatable rot1, Scale scale1,
            Position t2, PolygonCollider p2, Rotatable rot2, Scale scale2);
 
@@ -36,7 +35,10 @@ private:
   void shutdown(entt::registry &registry);
   void render_begin(entt::registry &registry);
   void on_render(entt::registry &registry);
+
+  CollisionSystem();
+  friend Engine;
 };
 
-} // namespace internal
+} // namespace systems
 } // namespace engine

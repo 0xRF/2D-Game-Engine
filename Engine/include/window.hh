@@ -22,6 +22,8 @@ namespace engine
         static uint32_t GetWidth();
         static uint32_t GetHeight();
 
+        static void* GetWindowHandle();
+
     private:
         static Window* m_instance;
 

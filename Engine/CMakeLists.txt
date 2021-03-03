@@ -51,7 +51,6 @@ add_library(
         include/components/rotatable.hh
         include/texture_manager.hh src/texture_manager.cc
         include/texture.hh src/texture.cc
-        internal/graphics_system.hh src/graphics_system.cc
         include/systems/movement_system.hh src/movement_system.cc
         include/components/component.hh
         include/components/scale.hh

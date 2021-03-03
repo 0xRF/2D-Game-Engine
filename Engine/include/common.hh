@@ -7,3 +7,6 @@
 #include <filesystem>
 #include <entt/entt.hpp>
 #include "rect.hh"
+#include "vector.hh"
+#include "math.hh"
+#include "log.hh"

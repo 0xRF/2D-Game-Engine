@@ -10,7 +10,6 @@
 #include "../include/math.hh"
 #include "../include/utils.hh"
 #include "../include/window.hh"
-#include "../internal/graphics_system.hh"
 #include <SDL_render.h>
 #include <algorithm>
 #include <imgui.h>
@@ -22,9 +21,6 @@ std::vector<Vector2> collisions{};
 
 
 namespace engine::systems {
-
-CollisionSystem *CollisionSystem::m_instance = nullptr;
-Engine *CollisionSystem::m_engine = nullptr;
 
 std::unique_ptr<std::vector<Vector2>>
 CollisionSystem::Collides(Position t1, PolygonCollider p1, Rotatable rot1,
@@ -61,11 +57,6 @@ CollisionSystem::Collides(Position t1, PolygonCollider p1, Rotatable rot1,
   return std::make_unique<std::vector<Vector2>>(collision_axis);
 }
 
-CollisionSystem *CollisionSystem::create(Engine *engine) {
-  m_instance = new CollisionSystem;
-  m_instance->m_engine = engine;
-  return m_instance;
-}
 
 void CollisionSystem::update(float dt, entt::registry &registry) {
 

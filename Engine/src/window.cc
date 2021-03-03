@@ -49,6 +49,10 @@ uint32_t Window::GetHeight() {
   return y;
 }
 
+void* Window::GetWindowHandle(){
+    return (void*)m_window;
+}
+
 Window::Window(std::string name, SDL_Window *window)
     : m_name(std::move(name)), m_window(window) {}
 }; // namespace engine
