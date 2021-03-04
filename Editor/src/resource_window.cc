@@ -36,16 +36,16 @@ void ResourceWindow::on_render(entt::registry &registry) {
       ResourceManager::SaveResourceFile();
     }
 
-    if (fileDialog.HasSelected() && fileDialog.IsOpened()) {
-      ResourceManager::AddResource(
-          SimpleResource(fileDialog.GetSelected(), std::string(current_item)));
-      fileDialog.Close();
-      fileDialog.ClearSelected();
-    }
-
     fileDialog.Display();
   }
   ImGui::End();
+
+  if (fileDialog.HasSelected() && fileDialog.IsOpened()) {
+    ResourceManager::AddResource(
+        SimpleResource(fileDialog.GetSelected(), std::string(current_item)));
+    fileDialog.Close();
+    fileDialog.ClearSelected();
+  }
 };
 void ResourceWindow::scene_end(entt::registry &registry){};
 void ResourceWindow::scene_load(entt::registry &registry) {

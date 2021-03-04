@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../vector.hh"
 
 struct RigidBody

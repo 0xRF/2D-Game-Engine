@@ -13,51 +13,48 @@
 #include <SDL.h>
 
 namespace engine {
-static std::weak_ptr<Engine> instance;
+static std::shared_ptr<Engine> instance;
 
-Engine::Engine()
-    : m_window(std::unique_ptr<Window>(Window::create("Test", 1280, 720))) {
-
+Engine::Engine() {
   DEBUG_ASSERT(instance == nullptr);
-  auto a = std::weak_ptr<Engine>(this);
-  instance = a;
+  instance = std::shared_ptr<Engine>(this);
 }
 
 Engine::~Engine() {}
 
-std::optional<Engine> Engine::Initialize() {
-
-  Engine engine = Engine();
+bool Engine::initialize() {
 
   if (SDL_Init(0) != 0) {
     logl("Failed to init sdl");
-    return std::nullopt;
+    return false;
   }
 
-  if (!Window::Initialize()) {
+  if (!Window::Initialize("Test", 1280, 720)) {
     logl("Failed to init Window");
-    return std::nullopt;
+    return false;
+  }
+  if (!Graphics::Initialize()) {
+    logl("Failed to init graphics_system");
+    return false;
   }
 
   if (!Input::Initialize()) {
     logl("Failed to init input");
-    return std::nullopt;
-  }
-  if (!Graphics::Initialize()) {
-    logl("Failed to init graphics_system");
-    return std::nullopt;
+    return false;
   }
 
+  /*
   if (!TextureManager::Initialize()) {
     logl("Failed to init texture_manager");
-    return std::nullopt;
+    return false;
   }
+  */
 
   instance->register_system<systems::PhysicsSystem>();
   instance->register_system<systems::CollisionSystem>();
   instance->register_system<systems::MovementSystem>();
 
-  return std::make_optional<Engine>(std::move(*instance));
+  return true;
 }
 
 void Engine::run() {

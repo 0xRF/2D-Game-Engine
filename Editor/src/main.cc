@@ -25,16 +25,17 @@
 using namespace engine;
 
 int main(int argc, char **argv) {
-  std::optional<Engine> instance = Engine::Initialize();
 
-  DEBUG_ASSERT(instance.has_value());
+  Engine instance;
+  if (!instance.initialize())
+    return EXIT_FAILURE;
 
-  instance->disable_system<systems::PhysicsSystem>();
-  instance->disable_system<systems::CollisionSystem>();
-  instance->disable_system<systems::MovementSystem>();
+  instance.disable_system<systems::PhysicsSystem>();
+  instance.disable_system<systems::CollisionSystem>();
+  instance.disable_system<systems::MovementSystem>();
 
-  instance->register_system<InspectorWindow>();
-  instance->register_system<ResourceWindow>();
+  instance.register_system<InspectorWindow>();
+  instance.register_system<ResourceWindow>();
 
   ResourceManager::SetResouceFile(
       "/home/rf/Projects/c++/gaiyas/resources.json");
@@ -42,10 +43,10 @@ int main(int argc, char **argv) {
   Engine::SubscribeToStart([](entt::registry &registry) -> void {});
   Engine::SubscribeToUpdate([&](entt::registry &registry, float dt) -> void {
     if (Input::GetKeyDown(KeyCode::ESCAPE))
-      instance->stop();
+      instance.stop();
   });
 
-  instance->run();
+  instance.run();
 
   return 0;
 }

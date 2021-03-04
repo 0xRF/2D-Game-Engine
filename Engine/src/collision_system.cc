@@ -19,8 +19,9 @@
 
 std::vector<Vector2> collisions{};
 
-
 namespace engine::systems {
+
+CollisionSystem::CollisionSystem() {}
 
 std::unique_ptr<std::vector<Vector2>>
 CollisionSystem::Collides(Position t1, PolygonCollider p1, Rotatable rot1,
@@ -56,7 +57,6 @@ CollisionSystem::Collides(Position t1, PolygonCollider p1, Rotatable rot1,
   }
   return std::make_unique<std::vector<Vector2>>(collision_axis);
 }
-
 
 void CollisionSystem::update(float dt, entt::registry &registry) {
 
@@ -159,4 +159,4 @@ void CollisionSystem::on_render(entt::registry &registry) {
   collisions.clear();
 }
 
-} // namespace engine::internal
+} // namespace engine::systems

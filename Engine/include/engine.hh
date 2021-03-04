@@ -23,7 +23,7 @@ public:
   Engine(const Engine &) = delete;
   ~Engine();
 
-  static std::optional<Engine> Initialize();
+  bool initialize();
 
   void run();
 

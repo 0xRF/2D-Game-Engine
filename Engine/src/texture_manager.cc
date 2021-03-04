@@ -1,6 +1,6 @@
 #include "../include/texture_manager.hh"
-#include "../include/graphics.hh"
 #include "../include/engine.hh"
+#include "../include/graphics.hh"
 #include "../include/log.hh"
 #include "../include/texture.hh"
 #include <SDL_image.h>
@@ -23,7 +23,8 @@ TextureManager::Load(const std::filesystem::path file) {
   }
 
   SDL_Texture *texture = NULL;
-  texture = SDL_CreateTextureFromSurface((SDL_Renderer*)Graphics::GetRenderer(), surface);
+  texture = SDL_CreateTextureFromSurface(
+      (SDL_Renderer *)Graphics::GetRenderer(), surface);
 
   if (!texture) {
     logl("Failed to convet sruface to texture");

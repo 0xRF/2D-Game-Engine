@@ -16,13 +16,11 @@
 
 using namespace engine;
 
-static Engine *instance = nullptr;
-
 int main(int argc, char **argv) {
 
-  instance = Engine::initialize();
-
-  instance->subscribe_to_start((startfn)[](entt::registry & registry)->void {
+  Engine instance;
+  instance.initialize();
+  Engine::SubscribeToStart([](entt::registry &registry) -> void {
     auto texture =
         TextureManager::Load("/home/rf/Projects/c++/gaiyas/assets/frame-1.png");
     if (!texture) {
@@ -48,10 +46,10 @@ int main(int argc, char **argv) {
     registry.emplace<Scale>(entity, 0.1f);
   });
 
-  instance->subscribe_to_update(
-      (updatefn)[](entt::registry & registry, float deltaTime)->void {
+  Engine::SubscribeToUpdate(
+      [&](entt::registry &registry, float deltaTime) -> void {
         if (Input::GetKeyDown(KeyCode::ESCAPE))
-          instance->stop();
+          instance.stop();
 
         auto view = registry.view<RigidBody>();
         for (auto mv = view.begin(); mv != view.end(); mv++) {
@@ -82,7 +80,7 @@ int main(int argc, char **argv) {
                     (float)Window::GetHeight() / 2};
   Vector2 vec = {1, 0};
 
-  instance->subscribe_to_render([&]() -> void {
+  Engine::SubscribeToRender([&]() -> void {
     ImGui::SliderFloat("Angle", &angle, 0, 360);
     ImGui::SliderFloat("Magnitude", &mag, 0, 500);
     Vector2 v = RotateVector2D(vec, angle);
@@ -90,7 +88,7 @@ int main(int argc, char **argv) {
     Graphics::DrawLine(center, v + center);
     Graphics::DrawLine(center, v + center);
   });
-  instance->run();
+  instance.run();
 
   return 0;
 }

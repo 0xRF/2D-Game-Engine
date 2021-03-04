@@ -1,3 +1,5 @@
+#pragma once
+
 #include "../common.hh"
 #include "../texture.hh"
 #include "../log.hh"
