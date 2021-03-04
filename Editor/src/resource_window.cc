@@ -28,9 +28,9 @@ void ResourceWindow::on_render(entt::registry &registry) {
       ImGui::EndCombo();
     }
 
-    if (ImGui::Button("Add")) {
+    if (ImGui::Button("Add"))
       fileDialog.Open();
-    }
+
     if (ImGui::Button("Update JSON")) {
       ResourceManager::DebugPrintResourceFile();
       ResourceManager::SaveResourceFile();

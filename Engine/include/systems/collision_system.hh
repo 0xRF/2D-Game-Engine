@@ -19,7 +19,6 @@ namespace systems {
 class CollisionSystem : public System {
 
 public:
-
   std::unique_ptr<std::vector<Vector2>>
   Collides(Position t1, PolygonCollider p1, Rotatable rot1, Scale scale1,
            Position t2, PolygonCollider p2, Rotatable rot2, Scale scale2);
@@ -27,14 +26,12 @@ public:
 private:
   static CollisionSystem *m_instance;
   static Engine *m_engine;
-
-  void update(float dt, entt::registry &registry);
-  void update_end(float dt, entt::registry &registry);
-  void scene_end(entt::registry &registry);
-  void scene_load(entt::registry &registry);
-  void shutdown(entt::registry &registry);
-  void render_begin(entt::registry &registry);
-  void on_render(entt::registry &registry);
+  void update(float dt, const Scene &scene) override;
+  void update_end(float dt, const Scene &scene) override;
+  void on_render(const Scene &scene) override;
+  void scene_end(const Scene &scene) override;
+  void scene_load(const Scene &scene) override;
+  void shutdown(const Scene &scene) override;
 
   CollisionSystem();
   friend Engine;

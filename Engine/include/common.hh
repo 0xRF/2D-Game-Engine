@@ -10,3 +10,4 @@
 #include "vector.hh"
 #include "math.hh"
 #include "log.hh"
+#include "scene.hh"

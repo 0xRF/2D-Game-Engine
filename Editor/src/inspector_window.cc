@@ -1,5 +1,5 @@
 #include "../include/inspector_window.hh"
-#include "../include/editor_entity.hh"
+#include "../include/components/tag.hh"
 #include "entt/core/fwd.hpp"
 #include <entt/core/type_info.hpp>
 #include <entt/core/type_traits.hpp>
@@ -26,10 +26,10 @@ void InspectorWindow::scene_load(entt::registry &registry) {
 };
 
 void InspectorWindow::InspectEntity(entt::registry &registry) {
-  auto &ee = registry.get<EditorEntity>(*current_item);
-  ImGui::LabelText("", "%s\n", ee.entity_name.c_str());
+  auto &ee = registry.get<Tag>(*current_item);
+  ImGui::LabelText("", "%s\n", ee.name.c_str());
 
-  ImGui::InputText("Name:", &ee.entity_name);
+  ImGui::InputText("Name:", &ee.name);
 
   registry.visit(*current_item, [&](const auto component) -> void {
     const entt::meta_type type = entt::resolve_type(component);
@@ -53,7 +53,8 @@ void InspectorWindow::on_render(entt::registry &registry) {
     if (ImGui::Button("Add Entity")) {
       auto entity = registry.create();
       size_t size = registry.size();
-      EditorEntity ee;
+
+      
       ee.entity_name = std::string("Entity: ") + std::to_string(size);
       registry.emplace<EditorEntity>(entity, ee);
       ImGui::End();

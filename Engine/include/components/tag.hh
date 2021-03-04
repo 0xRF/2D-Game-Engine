@@ -6,4 +6,4 @@ struct Tag{
     Tag(const std::string _name) : name(_name){}
     Tag() = default;
     Tag(const Tag&) = default;
-}
+};

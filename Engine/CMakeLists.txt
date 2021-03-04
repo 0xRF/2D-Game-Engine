@@ -56,7 +56,7 @@ add_library(
         include/components/scale.hh
         include/resource.hh
         include/resource_manager.hh
-        src/resource_manager.cpp
+        src/resource_manager.cc
 
         include/systems/physics_system.hh include/systems/collision_system.hh
         src/physics_system.cc src/collision_system.cc
