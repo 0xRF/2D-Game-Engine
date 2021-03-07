@@ -81,7 +81,7 @@ void Engine::run() {
       fn(m_registry, deltaTime);
 
     for (auto sys : m_systems)
-      sys->update(deltaTime, m_registry);
+      sys->update(deltaTime, m_sce);
 
     for (auto fn : m_post_update_queue)
       fn(m_registry, deltaTime);

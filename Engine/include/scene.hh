@@ -6,10 +6,10 @@ namespace engine {
 class Scene {
 public:
 
-    Entity& create_entity();
+    Entity create_entity();
+    entt::registry& get_entity_list();
 
 private:
-
     entt::registry m_registry;
     friend class Entity;
 

@@ -35,8 +35,9 @@ private:
   Scene *m_scene;
   entt::entity m_handle{entt::null};
   Entity() = delete;
-  Entity(Scene &scene) : m_scene(&scene) {
+  Entity(Scene *scene) : m_scene(scene) {
     m_handle = m_scene->m_registry.create();
   }
+  friend Scene;
 };
 } // namespace engine

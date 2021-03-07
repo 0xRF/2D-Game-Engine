@@ -1,16 +1,6 @@
-#pragma once
-#include <entt/entt.hpp>
+#include "../include/scene.hh"
+#include "../include/entity.hh"
 
 namespace engine {
-    class Entity;
-class Scene {
-public:
-
-private:
-
-    entt::registry m_registry;
-    friend class Entity;
-
-};
-
+Entity Scene::create_entity() { return std::move(Entity(this)); }
 } // namespace engine

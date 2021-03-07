@@ -15,6 +15,8 @@
 #include <entt/core/hashed_string.hpp>
 
 static const entt::entity *current_item = nullptr;
+
+namespace {
 void InspectorWindow::scene_load(entt::registry &registry) {
 
   auto factory = entt::meta<Position>()
@@ -25,8 +27,8 @@ void InspectorWindow::scene_load(entt::registry &registry) {
   //.data(&Position::y>("y"_hs);
 };
 
-void InspectorWindow::InspectEntity(entt::registry &registry) {
-  auto &ee = registry.get<Tag>(*current_item);
+void InspectorWindow::InspectEntity(const Scene& scene) {
+  auto &ee = scene.m_registry.get<Tag>(*current_item);
   ImGui::LabelText("", "%s\n", ee.name.c_str());
 
   ImGui::InputText("Name:", &ee.name);
@@ -54,7 +56,6 @@ void InspectorWindow::on_render(entt::registry &registry) {
       auto entity = registry.create();
       size_t size = registry.size();
 
-      
       ee.entity_name = std::string("Entity: ") + std::to_string(size);
       registry.emplace<EditorEntity>(entity, ee);
       ImGui::End();
@@ -88,4 +89,6 @@ void InspectorWindow::on_render(entt::registry &registry) {
   ImGui::End();
 };
 void InspectorWindow::scene_end(entt::registry &registry){};
-void InspectorWindow::shutdown(entt::registry &registry){};
+void InspectorWindow::shutdown(const Scene &scene){};
+
+} // namespace
