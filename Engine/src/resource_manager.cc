@@ -36,9 +36,13 @@ void ResourceManager::SetResouceFile(std::filesystem::path resource_directory) {
     m_resource_list.push_back(resource);
   }
 
+
+  ///TODO FIX
+  /*
   for (auto res : GetAllResoucesOfType<int>()) {
     engine::logl("A %s %s\n", res.m_type.c_str(), res.m_path.c_str());
   }
+  */
 }
 
 std::vector<std::string> ResourceManager::GetResouceTypes() {

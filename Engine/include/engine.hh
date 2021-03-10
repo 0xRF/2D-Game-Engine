@@ -13,9 +13,9 @@ class TextureManager;
 class System;
 
 using eventfn = std::function<void(const SDL_Event)>;
-using updatefn = std::function<void(entt::registry &, float)>;
+using updatefn = std::function<void(Scene&, float)>;
 using renderfn = std::function<void()>;
-using startfn = std::function<void(entt::registry &)>;
+using startfn = std::function<void(Scene&)>;
 
 class Engine {
 public:
@@ -57,7 +57,7 @@ private:
   std::vector<updatefn> m_post_update_queue{};
   std::vector<renderfn> m_render_queue{};
   std::vector<startfn> m_start_queue{};
-  entt::registry m_registry;
+  Scene* m_scene = nullptr;
 
   friend TextureManager;
 };

@@ -87,6 +87,6 @@ public:
 private:
     static void handle_key_down(const SDL_Event &event);
     static void handle_key_up(const SDL_Event &event);
-    static void post_update(entt::registry& registry, float dt);
+    static void post_update(Scene&, float dt);
 };
 }

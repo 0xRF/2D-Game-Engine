@@ -40,8 +40,8 @@ int main(int argc, char **argv) {
   ResourceManager::SetResouceFile(
       "/home/rf/Projects/c++/gaiyas/resources.json");
 
-  Engine::SubscribeToStart([](entt::registry &registry) -> void {});
-  Engine::SubscribeToUpdate([&](entt::registry &registry, float dt) -> void {
+  Engine::SubscribeToStart([](Scene &scene) -> void {});
+  Engine::SubscribeToUpdate([&](Scene &scene) -> void {
     if (Input::GetKeyDown(KeyCode::ESCAPE))
       instance.stop();
   });

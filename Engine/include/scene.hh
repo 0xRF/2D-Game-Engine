@@ -2,17 +2,15 @@
 #include <entt/entt.hpp>
 
 namespace engine {
-    class Entity;
+class Entity;
 class Scene {
 public:
-
-    Entity create_entity();
-    entt::registry& get_entity_list();
+  Entity create_entity();
+  entt::registry &get_entity_list();
 
 private:
-    entt::registry m_registry;
-    friend class Entity;
-
+  entt::registry m_registry;
+  friend class Entity;
 };
 
 } // namespace engine

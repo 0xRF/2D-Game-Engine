@@ -2,24 +2,18 @@
 #include "../include/components/box_collider.hh"
 #include "../include/components/position.hh"
 #include "../include/components/rigidbody.hh"
+#include "../include/scene.hh"
 
 namespace engine::systems {
 
-PhysicsSystem *PhysicsSystem::m_instance = nullptr;
-
-PhysicsSystem *PhysicsSystem::create(Engine *engine) {
-  m_instance = new PhysicsSystem;
-  return m_instance;
-}
-
-void PhysicsSystem::update(float dt, entt::registry &registry) {
-  auto view = registry.view<RigidBody>();
+void PhysicsSystem::update(float dt, Scene &scene) {
+  auto view = scene.get_entity_list().view<RigidBody>();
   view.each([&](RigidBody &rigid) { rigid.velocity.y += gravity * dt; });
 }
-void PhysicsSystem::update_end(float dt, entt::registry &registry) {}
-void PhysicsSystem::scene_end(entt::registry &registry) {}
-void PhysicsSystem::scene_load(entt::registry &registry) {}
-void PhysicsSystem::shutdown(entt::registry &registry) {}
-void PhysicsSystem::render_begin(entt::registry &registry) {}
-void PhysicsSystem::on_render(entt::registry &registry) {}
-} // namespace engine::internal
+
+void PhysicsSystem::update_end(float dt, Scene &scene) {}
+void PhysicsSystem::on_render(Scene &scene) {}
+void PhysicsSystem::scene_end(Scene &scene) {}
+void PhysicsSystem::scene_load(Scene &scene) {}
+void PhysicsSystem::shutdown(Scene &scene) {}
+} // namespace engine::systems

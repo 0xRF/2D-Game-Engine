@@ -1,4 +1,5 @@
 #include "../include/systems/collision_system.hh"
+#include "../include/scene.hh"
 #include "../include/components/box_collider.hh"
 #include "../include/components/polygon_collider.hh"
 #include "../include/components/position.hh"
@@ -58,12 +59,12 @@ CollisionSystem::Collides(Position t1, PolygonCollider p1, Rotatable rot1,
   return std::make_unique<std::vector<Vector2>>(collision_axis);
 }
 
-void CollisionSystem::update(float dt, entt::registry &registry) {
+void CollisionSystem::update(float dt, Scene &scene) {
 
   auto movables =
-      registry.view<Position, PolygonCollider, Rotatable, RigidBody, Scale>();
+      scene.get_entity_list().view<Position, PolygonCollider, Rotatable, RigidBody, Scale>();
   auto collidables =
-      registry.view<Position, PolygonCollider, Rotatable, Scale>();
+      scene.get_entity_list().view<Position, PolygonCollider, Rotatable, Scale>();
 
   for (auto mv = movables.begin(); mv != movables.end(); mv++) {
     PolygonCollider collider1 = movables.get<PolygonCollider>(*mv);
@@ -105,19 +106,18 @@ void CollisionSystem::update(float dt, entt::registry &registry) {
   }
 }
 
-void CollisionSystem::update_end(float dt, entt::registry &registry) {}
+void CollisionSystem::update_end(float dt, Scene &scene) {}
 
-void CollisionSystem::scene_end(entt::registry &registry) {}
+void CollisionSystem::scene_end(Scene &scene) {}
 
-void CollisionSystem::scene_load(entt::registry &registry) {}
+void CollisionSystem::scene_load(Scene &scene) {}
 
-void CollisionSystem::shutdown(entt::registry &registry) {}
+void CollisionSystem::shutdown(Scene &scene) {}
 
-void CollisionSystem::render_begin(entt::registry &registry) {}
+void CollisionSystem::on_render(Scene &scene) {
 
-void CollisionSystem::on_render(entt::registry &registry) {
-
-  auto polygons = registry.view<Position, PolygonCollider, Rotatable, Scale>();
+  auto polygons = scene.get_entity_list()
+                      .view<Position, PolygonCollider, Rotatable, Scale>();
 
   auto ent = *(polygons.begin());
   Position &position = polygons.get<Position>(ent);
@@ -137,8 +137,10 @@ void CollisionSystem::on_render(entt::registry &registry) {
       Vector2 point1 = col.points[a];
       Vector2 point2 = col.points[(a + 1) % col.points.size()];
 
-      /*      point1 = RotateVector2D(point1, rot.rotation);
-            point2 = RotateVector2D(point2, rot.rotation);*/
+      /*
+          point1 = RotateVector2D(point1, rot.rotation);
+          point2 = RotateVector2D(point2, rot.rotation);
+      */
 
       point1 *= scale;
       point2 *= scale;

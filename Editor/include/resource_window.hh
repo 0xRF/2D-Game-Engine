@@ -2,14 +2,14 @@
 
 #include <system.hh>
 
-class ResourceWindow : public engine::System {
+namespace engine {
+class ResourceWindow : public System {
 private:
-  void update(float dt, entt::registry &registry) override;
-  void update_end(float dt, entt::registry &registry) override;
-  void on_render(entt::registry &registry) override;
-  void scene_end(entt::registry &registry) override;
-  void scene_load(entt::registry &registry) override;
-  void shutdown(entt::registry &registry) override;
-    
-
+  void update(float dt,Scene&) override;
+  void update_end(float dt,Scene&) override;
+  void on_render(Scene& ) override;
+  void scene_end(Scene&) override;
+  void scene_load(Scene&) override;
+  void shutdown(Scene&) override;
 };
+} // namespace engine

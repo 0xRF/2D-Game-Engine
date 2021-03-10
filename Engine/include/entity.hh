@@ -31,6 +31,7 @@ public:
   operator bool() const { return m_handle != entt::null; }
   operator entt::entity() const { return m_handle; }
 
+
 private:
   Scene *m_scene;
   entt::entity m_handle{entt::null};

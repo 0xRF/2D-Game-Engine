@@ -9,6 +9,7 @@
 #include "../include/texture.hh"
 #include "../include/texture_manager.hh"
 #include "../include/window.hh"
+#include "../include/scene.hh"
 
 #include <SDL.h>
 
@@ -62,10 +63,10 @@ void Engine::run() {
   float deltaTime = 0.0f;
 
   for (auto fn : m_start_queue)
-    fn(m_registry);
+    fn(*m_scene);
 
   for (auto sys : m_systems)
-    sys->scene_load(m_registry);
+    sys->scene_load(*m_scene);
 
   while (m_alive) {
 
@@ -78,24 +79,24 @@ void Engine::run() {
     Uint32 t1 = SDL_GetTicks();
 
     for (auto fn : m_update_queue)
-      fn(m_registry, deltaTime);
+      fn(*m_scene, deltaTime);
 
     for (auto sys : m_systems)
-      sys->update(deltaTime, m_sce);
+      sys->update(deltaTime, *m_scene);
 
     for (auto fn : m_post_update_queue)
-      fn(m_registry, deltaTime);
+      fn(*m_scene, deltaTime);
 
     for (auto sys : m_systems)
-      sys->update_end(deltaTime, m_registry);
+      sys->update_end(deltaTime, *m_scene);
 
-    Graphics::render_begin(m_registry);
+    Graphics::render_begin(m_scene->get_entity_list());
 
     for (auto fn : m_render_queue)
       fn();
 
     for (auto sys : m_systems)
-      sys->on_render(m_registry);
+      sys->on_render(*m_scene);
 
     Graphics::render_end();
 
