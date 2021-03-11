@@ -41,7 +41,7 @@ int main(int argc, char **argv) {
       "/home/rf/Projects/c++/gaiyas/resources.json");
 
   Engine::SubscribeToStart([](Scene &scene) -> void {});
-  Engine::SubscribeToUpdate([&](Scene &scene) -> void {
+  Engine::SubscribeToUpdate([&](Scene &scene, float dt) -> void {
     if (Input::GetKeyDown(KeyCode::ESCAPE))
       instance.stop();
   });

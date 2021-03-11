@@ -19,6 +19,11 @@ public:
     return m_scene->m_registry.has<T>(m_handle);
   }
 
+  void destroy() {
+    m_scene->get_entity_list().remove(m_handle);
+    m_handle = entt::null;
+  }
+
   template <typename T> T &get() {
     DEBUG_ASSERT(has<T>());
     return m_scene->m_registry.get<T>(m_handle);
@@ -30,15 +35,18 @@ public:
   }
   operator bool() const { return m_handle != entt::null; }
   operator entt::entity() const { return m_handle; }
+  bool operator==(const Entity &other) { return m_handle == other.m_handle; }
 
+  Entity(entt::entity id, Scene *scene) : m_scene(scene), m_handle(id) {}
+
+  Entity(Scene *scene) : m_scene(scene) {
+    m_handle = m_scene->m_registry.create();
+  }
 
 private:
   Scene *m_scene;
   entt::entity m_handle{entt::null};
   Entity() = delete;
-  Entity(Scene *scene) : m_scene(scene) {
-    m_handle = m_scene->m_registry.create();
-  }
   friend Scene;
 };
 } // namespace engine

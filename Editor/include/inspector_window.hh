@@ -11,6 +11,6 @@ private:
   void scene_end(Scene &scene) override;
   void scene_load(Scene &scene) override;
   void shutdown(Scene &scene) override;
-  void InspectEntity(entt::registry &registry);
+  void InspectEntity(Scene& scene);
 };
 } // namespace engine

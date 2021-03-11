@@ -10,9 +10,11 @@ ImGui::FileBrowser fileDialog;
 static const char *current_item = NULL;
 std::vector<std::string> types;
 
-void ResourceWindow::update(float dt, entt::registry &registry){};
-void ResourceWindow::update_end(float dt, entt::registry &registry){};
-void ResourceWindow::on_render(entt::registry &registry) {
+using namespace engine;
+
+void ResourceWindow::update(float dt, Scene &scene){};
+void ResourceWindow::update_end(float dt, Scene &scene){};
+void ResourceWindow::on_render(Scene &scene) {
 
   ImGui::Begin("Tree");
   {
@@ -47,9 +49,9 @@ void ResourceWindow::on_render(entt::registry &registry) {
     fileDialog.ClearSelected();
   }
 };
-void ResourceWindow::scene_end(entt::registry &registry){};
-void ResourceWindow::scene_load(entt::registry &registry) {
+void ResourceWindow::scene_end(Scene& scene){};
+void ResourceWindow::scene_load(Scene& scene) {
   types = ResourceManager::GetResouceTypes();
   current_item = types[0].c_str();
 };
-void ResourceWindow::shutdown(entt::registry &registry){};
+void ResourceWindow::shutdown(Scene& scene){};

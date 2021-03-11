@@ -8,6 +8,7 @@ struct Vector2 {
   float y;
 
   Vector2() : x(0.0f), y(0.0f) {}
+  Vector2(Vector2& v) : x(v.x), y(v.y) {}
   Vector2(float x, float y) : x(x), y(y) {}
   //  Vector2(int32_t x, int32_t y) : x(x), y(y) {}
 
